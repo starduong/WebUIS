@@ -1,3 +1,5 @@
+vn\edu\ptithcm\WebUIS\controller\AuthenticationController.class
+vn\edu\ptithcm\WebUIS\controller\student\ConductScoreController.class
 vn\edu\ptithcm\WebUIS\controller\student\StudentController.class
 vn\edu\ptithcm\WebUIS\config\WebMvcConfig.class
 vn\edu\ptithcm\WebUIS\WebUisApplication.class

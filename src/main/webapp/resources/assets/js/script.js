@@ -7,7 +7,7 @@ var navBarElement = document.getElementById("navbar");
 var navbarnavlinks = document.getElementsByClassName("theme-item");
 
 
-document.getElementById("radioCompactView").addEventListener("click", function() {
+document.getElementById("radioCompactView").addEventListener("click", function () {
 	//alert('yoyo1');
 	theSideBar.style.display = "none";
 	thePageWrapper.classList.add("container");
@@ -20,14 +20,14 @@ document.getElementById("radioCompactView").addEventListener("click", function()
 	setCookie("compactView", "true", 1);
 });
 
-document.getElementById("radioFullView").addEventListener("click", function() {
+document.getElementById("radioFullView").addEventListener("click", function () {
 	//alert('yoyo2');
 	thePageWrapper.classList.remove("container");
 	bodywrapper.classList.remove("container");
 	bodywrapper.classList.add("container-fluid");
 	navBarElement.classList.remove("container");
 	thesidebarCollapsebtn.style.display = "block";
-    theSideBar.style.display = "block";
+	theSideBar.style.display = "block";
 	removeViewSizeCookie();
 });
 
@@ -162,7 +162,7 @@ function getCookie(cookieName) {
 
 
 scrollToTop = document.getElementById("scrollToTop");
-window.onscroll = function() { scrollFunction() };
+window.onscroll = function () { scrollFunction() };
 function scrollFunction() {
 	if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
 		scrollToTop.style.display = "block";
@@ -178,7 +178,7 @@ function scrollToTopFunction() {
 }
 
 function onReady(callback) {
-	var intervalId = window.setInterval(function() {
+	var intervalId = window.setInterval(function () {
 		if (document.getElementsByTagName('body')[0] !== undefined) {
 			window.clearInterval(intervalId);
 			callback.call(this);
@@ -191,7 +191,7 @@ function setVisible(selector, visible) {
 		: 'none';
 }
 
-onReady(function() {
+onReady(function () {
 	setVisible('#page', true);
 	setVisible('#loading', false);
 });
@@ -267,8 +267,8 @@ function changeColor(colornumber) {
 		for (var i = 0, length = navbarnavlinks.length; i < length; i++) {
 			navbarnavlinks[i].style.color = '#767676';
 		}
-		document.querySelector(".navbrandarea2").style.color='#008000';
-		document.querySelector(".sidebar-title").style.color='#008000';
+		document.querySelector(".navbrandarea2").style.color = '#008000';
+		document.querySelector(".sidebar-title").style.color = '#008000';
 		setCookie("colornumber", "4", 1);
 	}
 }
@@ -280,7 +280,7 @@ var dropdown = document.getElementsByClassName("sidebar-dropdown-btn");
 var i;
 
 for (i = 0; i < dropdown.length; i++) {
-	dropdown[i].addEventListener("click", function() {
+	dropdown[i].addEventListener("click", function () {
 		this.classList.toggle("active");
 		var dropdownContent = this.nextElementSibling;
 		if (dropdownContent.style.display === "block") {
@@ -303,4 +303,5 @@ function openOverlayNav() {
 function closeOverlayNav() {
 	document.getElementById("sidebarOverlayNav").style.width = "0%";
 }
+
 
