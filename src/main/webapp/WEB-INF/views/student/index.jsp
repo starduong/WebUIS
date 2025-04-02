@@ -8,7 +8,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link rel="shortcut icon" type="image/x-icon" href="assets/img/leaf.svg">
+        <link rel="shortcut icon" type="image/x-icon" href="assets/img/ptithcm-logo.jpg">
         <title>UIS</title>
         <link href="assets/css/bootstrap.css" rel="stylesheet">
         <link href="assets/css/main.css" rel="stylesheet">
@@ -68,7 +68,7 @@
                                                         <i data-feather="calendar"></i> tuần này
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <a class="text-primary float-end" href="#"><i class="blue"
+                                                        <a class="text-primary float-end" href=""><i class="blue"
                                                                 data-feather="chevrons-right"></i>Xem
                                                             chi tiết</a>
                                                     </div>

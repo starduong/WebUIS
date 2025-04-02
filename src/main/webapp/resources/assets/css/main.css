@@ -174,13 +174,27 @@ body {
 .data-feather {
     width: 18px;
     height: 18px;
-}
+}   
 
 .app-logo {
-    width: 20px;
-    height: 20px;
-    /* 		border-radius:50%; */
-    /* 		border: 1px solid #555; */
+    width: 200px;
+    height: 40px;
+}
+
+/* Media query cho mobile (dưới 768px) */
+@media (max-width: 768px) {
+    .app-logo {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Media query cho mobile (dưới 1150px) */
+@media (max-width: 1150px) {
+    .app-logo {
+        width: 30px;
+        height: 30px    ;
+    }
 }
 
 .user-avatar {
@@ -477,19 +491,35 @@ a[aria-expanded="true"] {
     background-image: linear-gradient(315deg, #b8c6db 0%, #f5f7fa 74%);
 }
 
+.logo-desktop {
+    display: block;
+}
+
+.logo-mobile {
+    display: none;
+}
+
 @media (max-width : 768px) {
+    .logo-desktop {
+        display: none; /* Ẩn logo desktop trên mobile */
+    }
+
+    .logo-mobile {
+        display: block; /* Hiển thị logo mobile trên mobile */
+    }
+
     #sidebarCollapse {
-        display: none !important;
+        display: block !important;
         /* 		bottom: 0; */
     }
 
     #sidebar {
-        display: none !important;
+        display: block !important;
         /* 		bottom: 0; */
     }
 
     #body .nav-dropdown .nav-item span {
-        display: none !important;
+        display: block !important;
     }
 
     .navbrandarea1 {
@@ -499,36 +529,58 @@ a[aria-expanded="true"] {
     .navbrandarea2 {
         display: block !important;
     }
+
+    .collapse {
+        
+            display: flex !important;
+            flex-basis: auto !important;
+            flex-direction: row !important; /* Hiển thị các mục theo hàng ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            gap: 10px; /* Tạo khoảng cách giữa các mục */
+        
+    }
+
+    .navbar-nav {
+        display: flex;
+        flex-direction: row !important;
+        align-items: center;
+    }
+    
 }
-
-/* @media ( max-width : 1200px) { */
-/* 	#page { */
-/* 	margin-right: 0px;  */
-/* 	} */
-/* } */
-
-/* @media only screen and (min-width: 992px) and (max-width: 1199px) { */
-/* 	.search-form { */
-/* 		width: 220px; */
-/* 	} */
-/* } */
-
-/* @media only screen and (min-width: 768px) and (max-width: 991px) { */
-/* 	.search-form { */
-/* 		width: 100%; */
-/* 		margin: 10px 0; */
-/* 	} */
-/* } */
-
-/* @media ( max-width : 991px) { */
-/* 	/* 	@media ( max-width : 767px) { */
-/* 	.search-form { */
-/* 		width: 100%; */
-/* 		margin: 10px 0; */
-/* 		display: none; */
-/* 	} */
-/* } */
+ @media ( max-width : 1200px) {
+ 	#page {
+ 	margin-right: 0px;
+ 	}
+ }
+ @media only screen and (min-width: 992px) and (max-width: 1199px) { 
+ 	.search-form { 
+ 		width: 220px;
+ 	} 
+ } 
+ @media only screen and (min-width: 768px) and (max-width: 991px) { 
+ 	.search-form { 
+ 		width: 100%; 
+ 		margin: 10px 0; 
+ 	} 
+ } 
+ @media ( max-width : 991px) { 
+ 		@media ( max-width : 767px) { 
+ 	.search-form { 
+ 		width: 100%; 
+ 		margin: 10px 0; 
+ 		display: none; 
+ 	}
+ } 
+}
 @media (max-width : 1150px) {
+    .logo-desktop {
+        display: none; /* Ẩn logo desktop trên mobile */
+    }
+
+    .logo-mobile {
+        display: block; /* Hiển thị logo mobile trên mobile */
+    }
+
     .theme-btn {
         padding: 5px 10px;
         font-size: 14px;

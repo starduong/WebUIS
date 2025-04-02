@@ -5,8 +5,8 @@
     <nav id="sidebar" class="active">
 
         <div class="sidebar-header text-center">
-            <img src="../assets/img/leaf.svg" alt="logo" class="app-logo">
-            <h4 class="sidebar-title theme-item">PTIT</h4>
+            <img src="../assets/img/logo/ptithcm-logo.jpg" alt="logo" class="app-logo">
+            <h4 class="sidebar-title theme-item"></h4>
         </div>
 
         <ul class="list-unstyled components text-secondary">

@@ -9,7 +9,7 @@
                     src="assets/img/leaf.svg" alt="logo" class="logo logo-dark"></li>
         </ul>
         <h2>
-            <a href="#" class="text-success no-decor">PTIT</a>
+            <a href="#" class="text-success no-decor"></a>
         </h2>
 
         <div class="collapse navbar-collapse mx-1" id="navbarsExample04">

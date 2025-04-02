@@ -5,8 +5,10 @@
     <nav id="sidebar" class="active">
 
         <div class="sidebar-header text-center">
-            <img src="/assets/img/leaf.svg" alt="logo" class="app-logo">
-            <h4 class="sidebar-title theme-item">PTIT</h4>
+                <!-- Logo cho desktop -->
+                <img src="/assets/img/logo-ptit-1.svg" alt="logo" class="app-logo logo-desktop">
+                <!-- Logo cho mobile -->
+                <img src="/assets/img/ptithcm-logo.jpg" alt="logo" class="app-logo logo-mobile">        
         </div>
 
         <ul class="list-unstyled components text-secondary">

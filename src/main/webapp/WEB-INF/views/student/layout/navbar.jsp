@@ -6,13 +6,13 @@
             <button type="button" id="sidebarCollapse" class="btn btn-light py-0">
                 <i data-feather="menu"></i> <span></span>
             </button>
-            <img src="/assets/img/leaf.svg" alt="logo" class="app-logo theme-item mx-2 navbrandarea1">
-            <h4 class="sidebar-title theme-item mt-2 navbrandarea2">PTIT</h4>
-            <button class="navbar-toggler py-0" type="button" data-bs-toggle="collapse"
+            <!-- <img src="/assets/img/logo-ptit-1.svg" alt="logo" class="app-logo theme-item mx-2 navbrandarea1" style="width: 200px; height: 40px;"> -->
+            <!-- <h4 class="sidebar-title theme-item mt-2 navbrandarea2">Học viện Công nghệ Bưu chính Viễn thông</h4> -->
+            <!-- <button class="navbar-toggler py-0" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"><i data-feather="menu"></i></span>
-            </button>
+            </button> -->
 
             <div class="collapse navbar-collapse mx-1" id="navbarsExample04">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -28,7 +28,7 @@
                             <a class="nav-item nav-link active text-secondary py-0" aria-current="page"
                                 href="/student/profile/N22DCVT076"><i class="data-feather theme-item"
                                     data-feather="user"></i>
-                                <span class="theme-item">Thông tin cá nhân</span></a>
+                                <span class="theme-item">Thông tin</span></a>
                         </div>
                     </li>
 
@@ -37,8 +37,8 @@
                 <div class="usermenu">
                     <div class="nav-dropdown py-0">
                         <a href="#" class="nav-item nav-link dropdown-toggle text-secondary py-0" id="navbarDropdown3"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false"> <img
-                                class="theme-item user-avatar" src="/assets/img/ptithcm-logo.jpg" alt="User image">
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false"> 
+                            <!-- <img class="theme-item user-avatar" src="/assets/img/ptithcm-logo.jpg" alt="User image"/> -->
                             <span class="theme-item">My
                                 Name</span><i class="theme-item" data-feather="chevron-down"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown3">

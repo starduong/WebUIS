@@ -10,7 +10,7 @@
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <link rel="shortcut icon" type="image/x-icon" href="../assets/img/leaf.svg">
+                <link rel="shortcut icon" type="image/x-icon" href="../assets/img/logo-ptit-1.svg">
                 <title>UIS</title>
                 <link href="../assets/css/bootstrap.css" rel="stylesheet">
                 <link href="../assets/css/main.css" rel="stylesheet">

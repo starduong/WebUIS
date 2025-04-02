@@ -6,8 +6,7 @@
             <button type="button" id="sidebarCollapse" class="btn btn-light py-0">
                 <i data-feather="menu"></i> <span></span>
             </button>
-            <img src="../assets/img/leaf.svg" alt="logo" class="app-logo theme-item mx-2 navbrandarea1">
-            <h4 class="sidebar-title theme-item mt-2 navbrandarea2">PTIT</h4>
+            <img src="../assets/img/logo-ptit-1.svg" alt="logo" class="app-logo theme-item mx-2 navbrandarea1">
             <button class="navbar-toggler py-0" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false"
                 aria-label="Toggle navigation">
