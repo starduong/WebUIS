@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-WebUisApplication<WebUIS>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "vn.edu.ptithcm.WebUIS.WebUisApplication",
+            "projectName": "WebUIS",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
