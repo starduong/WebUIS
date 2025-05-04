@@ -32,10 +32,10 @@
 	</properties>
 	<dependencies>
 		<!-- Cung cấp các endpoint để giám sát và quản lý ứng dụng (ví dụ: /actuator/health, /actuator/info) -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Hỗ trợ Spring Data JPA để tương tác với cơ sở dữ liệu thông qua ORM (Hibernate) -->
 		<dependency>

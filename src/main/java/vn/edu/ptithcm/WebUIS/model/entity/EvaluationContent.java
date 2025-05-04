@@ -1,34 +1,32 @@
 package vn.edu.ptithcm.WebUIS.model.entity;
 
-import java.util.List;
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-@Entity
-@Table(name = "NoiDungDanhGia", schema = "HocTap")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "NoiDungDanhGia")
 public class EvaluationContent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdND", nullable = false)
-    private Integer evaluationContentId;
+    @Column(name = "IdND")
+    private Integer id;
 
     @Column(name = "NoiDung", length = 500)
+    @NotNull(message = "Nội dung không được để trống")
     private String content;
 
-    @Column(name = "DiemQuyDinh")
-    private Integer regulatedScore;
+    @Column(name = "DiemToiDa")
+    @NotNull(message = "Điểm tối đa không được để trống")
+    private Integer maxScore;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdTC", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "IdTC")
+    @NotNull(message = "Mã tiêu chí không được để trống")
     private Criterion criterion;
-
-    @OneToMany(mappedBy = "evaluationContent", fetch = FetchType.LAZY)
-    private List<ContentAssessment> ContentAssessments;
 }

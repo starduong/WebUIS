@@ -3,31 +3,25 @@ package vn.edu.ptithcm.WebUIS.model.entity;
 import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Entity
-@Table(name = "TieuChi", schema = "HocTap")
-@Data
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "TieuChi")
 public class Criterion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdTC", nullable = false)
-    private Integer criterionId;
+    private Integer id;
 
-    @Column(name = "TenTC", length = 100, nullable = false)
-    private String criterionName;
-
-    @Column(name = "NoiDung", length = 500)
-    private String content;
-
-    @Column(name = "DiemQuyDinh", nullable = false)
-    private Integer regulatedScore;
+    @Column(name = "TenTC", length = 500, nullable = false) 
+    private String name; 
 
     @OneToMany(mappedBy = "criterion", fetch = FetchType.LAZY)
-    private List<CriterionAssessment> criterionAssessments;
+    private List<EvaluationContent> evaluationContents;
 }

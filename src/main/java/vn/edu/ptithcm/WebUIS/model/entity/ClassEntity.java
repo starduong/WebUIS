@@ -3,35 +3,44 @@ package vn.edu.ptithcm.WebUIS.model.entity;
 import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-@Entity
-@Table(name = "Lop", schema = "QuanLy")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "Lop")
 public class ClassEntity {
-
     @Id
-    @Column(name = "MaLop", length = 10, nullable = false)
+    @Column(name = "MaLop", unique = true, nullable = false, length = 10)
+    @NotNull(message = "Mã lớp không được để trống")
     private String classId;
 
-    @Column(name = "NganhDaoTao", length = 100, nullable = false)
-    private String trainingField;
+    @Column(name="NganhDaoTao", nullable = false)
+    @NotNull(message = "Ngành đào tạo không được để trống")
+    private String major;
 
-    @Column(name = "HeDaoTao", length = 50, nullable = false)
-    private String trainingSystem;
+    @Column(name="HeDaoTao", nullable = false)
+    @NotNull(message = "Hệ đào tạo không được để trống")
+    private String educationLevel;
 
-    @Column(name = "NienKhoa", length = 9, nullable = false)
-    private String academicYear;
+    @Column(name="NienKhoa", nullable = false)
+    @NotNull(message = "Niên khóa không được để trống")
+    private Integer academicYear;
 
-    @OneToMany(mappedBy = "classEntity", fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name="MaKhoa")
+    @NotNull(message = "Mã khoa không được để trống")
+    private Department department;
+
+    @OneToMany(mappedBy = "student")
     private List<Student> students;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaKhoa", nullable = false)
-    private Faculty faculty;
+    @OneToMany(mappedBy = "lecturer")
+    private List<Lecturer> lecturers;
 
+    @OneToMany(mappedBy = "classCommittee")
+    private List<ClassCommittee> classCommittees;
 }

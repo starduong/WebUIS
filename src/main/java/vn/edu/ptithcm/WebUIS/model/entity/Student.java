@@ -1,84 +1,98 @@
 package vn.edu.ptithcm.WebUIS.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "SinhVien", schema = "SinhVien")
-// library lambok
-@Data // declare getter/setter
-@NoArgsConstructor // declare constructor no parameters
-@AllArgsConstructor // declare constructor has all parameters
+@Table(name = "SinhVien")
 public class Student {
 
     @Id
-    @Column(name = "MaSV", length = 10, nullable = false)
-    private String studentId;
+    @Column(name = "MaSV", length = 10)
+    @NotNull(message = "Mã sinh viên không được để trống")
+    private String id;
 
     @Column(name = "Ho", length = 50, nullable = false)
+    @NotNull(message = "Họ không được để trống")
     private String lastName;
 
     @Column(name = "Ten", length = 50, nullable = false)
+    @NotNull(message = "Tên không được để trống")
     private String firstName;
 
     @Column(name = "NgaySinh", nullable = false)
+    @NotNull(message = "Ngày sinh không được để trống")
     private LocalDate dateOfBirth;
 
     @Column(name = "GioiTinh", nullable = false)
-    private boolean gender;
+    @NotNull(message = "Giới tính không được để trống")
+    private Boolean gender;
 
     @Column(name = "SoDienThoai", length = 10, nullable = false)
     private String phoneNumber;
 
-    @Column(name = "CCCD", length = 12, nullable = false, unique = true)
+    @Column(name = "CCCD", length = 12, nullable = false)
+    @NotNull(message = "Số CCCD không được để trống")
     private String citizenId;
 
-    @Column(name = "Email1", length = 100)
-    private String primaryEmail;
+    @Column(name = "EmailTruong", length = 100)
+    @NotNull(message = "Email trường không được để trống")
+    @Email(message = "Email trường không hợp lệ")
+    private String universityEmail;
 
-    @Column(name = "Email2", length = 100)
-    private String secondaryEmail;
+    @Column(name = "EmailCaNhan", length = 100)
+    private String personalEmail;
 
     @Column(name = "HinhAnh", length = 255)
     private String imagePath;
 
-    @Column(name = "Password", length = 255)
-    private String password;
+    @Column(name = "QueQuan", length = 100)
+    private String hometown;
+
+    @Column(name = "DiaChi", length = 500)
+    private String address;
+
+    @Column(name = "HoKhau", length = 100)
+    private String permanentAddress;
+
+    @Column(name = "DanToc", length = 50)
+    private String ethnicity;
 
     @Column(name = "TrangThai", nullable = false)
-    private boolean status;
+    @NotNull(message = "Trạng thái không được để trống")
+    private Boolean status;
 
-    // Student (N) - Major (1)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaCN", nullable = false)
+    @ManyToOne
+    @JoinColumn(name="MaTK")
+    @NotNull(message = "Tài khoản không được để trống")
+    private Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "MaCN")
+    @NotNull(message = "Chương trình không được để trống")
     private Major major;
 
-    // Student (N) - ClassEntity (1)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaLop", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "MaLop")
+    @NotNull(message = "Lớp không được để trống")
     private ClassEntity classEntity;
 
+    @OneToMany(mappedBy = "student")
+    private List<AcademicResult> academicResults;
+
+    @OneToMany(mappedBy = "student")
+    private List<TrainingScore> trainingScores;
+
+    @OneToMany(mappedBy = "student")
+    private List<ClassCommittee> classCommittees;
 }
-
-// @formatter:off
-/*
- * @Column: Dùng cho dữ liệu cơ bản, không liên quan đến quan hệ.
- * @JoinColumn: Dùng để định nghĩa khóa ngoại trong mối quan hệ giữa các entity.
- */
-
-/*
- * FetchType.LAZY: Tải "lười biếng" (lazy loading). Dữ liệu liên quan không tải ngay, chỉ tải khi truy cập (on-demand). 
- * SELECT sv.*, l.* 
- * FROM SinhVien sv
- * INNER JOIN Lop l ON sv.MaLop = l.MaLop WHERE sv.MaSV = 'SV001';
- * 
- * FetchType.EAGER: Tải "háo hức" (eager loading). Dữ liệu liên quan tải ngay cùng entity chính.
- * SELECT * FROM SinhVien WHERE MaSV = 'SV001';
- * khi gọi getClassEntity(), mới thực hiện
- * SELECT * FROM Lop WHERE MaLop = 'LOP001';
- */
-// @formatter:on

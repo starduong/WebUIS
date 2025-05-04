@@ -1,56 +1,63 @@
 package vn.edu.ptithcm.WebUIS.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
-@Table(name = "DiemRenLuyen", schema = "HocTap")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "DiemRenLuyen")
 public class TrainingScore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdDRL", nullable = false)
-    private Integer trainingScoreId;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaLop")
-    private ClassEntity classEntity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdHK")
+    @JoinColumn(name = "IdHK", nullable = false)
+    @NotNull(message = "Học kỳ không được để trống")
     private Semester semester;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaSV", nullable = false)
+    @NotNull(message = "Mã sinh viên không được để trống")
+    private Student student;
+
     @Column(name = "ThoiGianBatDau")
+    @NotNull(message = "Thời gian bắt đầu không được để trống")
     private LocalDate startDate;
 
     @Column(name = "ThoiGianKetThuc")
+    @NotNull(message = "Thời gian kết thúc không được để trống")
     private LocalDate endDate;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "IdNVPB")
-    // private StaffDepartment staffDepartment;
+    @Column(name = "NgaySVCham")
+    private LocalDate studentAssessmentDate;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "IdNVK")
-    // private StaffFaculty staffFaculty;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdBCS")
+    private ClassCommittee classCommittee;
 
-    @OneToMany(mappedBy = "trainingScore", fetch = FetchType.LAZY)
+    @Column(name = "NgayBCSCham")
+    private LocalDate classCommitteeAssessmentDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdCVHT")
+    private AcademicAdvisor academicAdvisor;
+
+    @Column(name = "NgayCVHTCham")
+    private LocalDate advisorAssessmentDate;
+
+    @Column(name = "TongDiem")
+    private Integer totalScore;
+
+    @OneToMany(mappedBy = "trainingScore")
     private List<TrainingScoreDetail> trainingScoreDetails;
-
-    // Constraint CHECK: ThoiGianBatDau < ThoiGianKetThuc
-    @PrePersist
-    @PreUpdate
-    public void validateDates() {
-        if (startDate != null && endDate != null && !startDate.isBefore(endDate)) {
-            throw new IllegalArgumentException("Start date must be before end date");
-        }
-    }
 }
