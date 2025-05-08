@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import vn.edu.ptithcm.WebUIS.model.entity.Semester;
+import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
 import vn.edu.ptithcm.WebUIS.service.StudentService;
 
 @Controller

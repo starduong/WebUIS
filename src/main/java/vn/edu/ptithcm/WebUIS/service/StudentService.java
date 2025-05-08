@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import vn.edu.ptithcm.WebUIS.model.entity.Semester;
-import vn.edu.ptithcm.WebUIS.model.entity.Student;
+import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
+import vn.edu.ptithcm.WebUIS.domain.entity.Student;
 import vn.edu.ptithcm.WebUIS.repository.SemesterRepository;
 import vn.edu.ptithcm.WebUIS.repository.StudentRepository;
 
