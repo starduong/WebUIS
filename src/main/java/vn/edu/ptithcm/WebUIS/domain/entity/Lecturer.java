@@ -68,7 +68,7 @@ public class Lecturer {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "MaTK")
+    @JoinColumn(name = "IdTK")
     @NotNull(message = "Tài khoản không được để trống")
     private Account account;
 

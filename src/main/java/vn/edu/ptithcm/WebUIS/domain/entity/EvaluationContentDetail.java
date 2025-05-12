@@ -11,12 +11,15 @@ import lombok.*;
 @Table(name = "ChiTietNoiDungDanhGia")
 public class EvaluationContentDetail {
 
+    @EmbeddedId
+    private EvaluationContentDetailPK id;
+
     @ManyToOne
-    @JoinColumn(name = "IdND")
+    @JoinColumn(name = "IdND", insertable = false, updatable = false)
     private EvaluationContent evaluationContent;
 
     @ManyToOne
-    @JoinColumn(name = "IdCTND")
+    @JoinColumn(name = "IdCTND", insertable = false, updatable = false)
     private EvaluationContent evaluationContentDetail;
 
 }

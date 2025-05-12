@@ -19,12 +19,12 @@ public class ClassCommittee {
     @Column(name = "IdBCS")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "MaSV", nullable = false)
     @NotNull(message = "Mã sinh viên không được để trống")
     private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "MaLop", nullable = false)
     @NotNull(message = "Mã lớp không được để trống")
     private ClassEntity classEntity;

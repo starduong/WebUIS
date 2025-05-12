@@ -52,7 +52,7 @@ public class Employee {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "MaTK")
+    @JoinColumn(name = "IdTK")
     private Account account;
 
     @ManyToOne

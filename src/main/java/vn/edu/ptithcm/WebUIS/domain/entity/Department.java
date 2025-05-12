@@ -11,14 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Khoa")
+@Table(name = "PhongBanKhoa")
 public class Department {
     @Id
-    @Column(name = "MaKhoa", length = 10)
+    @Column(name = "MaPBK", length = 10)
     @NotNull(message = "Mã khoa không được để trống")
     private String departmentId;
 
-    @Column(name = "TenKhoa", nullable = false, length = 100)
+    @Column(name = "TenPBK", nullable = false, length = 100)
     @NotNull(message = "Tên khoa không được để trống")
     private String departmentName;
 

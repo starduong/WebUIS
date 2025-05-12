@@ -1,7 +1,5 @@
 package vn.edu.ptithcm.WebUIS.domain.entity;
 
-import java.util.List;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -35,12 +33,4 @@ public class ClassEntity {
     @NotNull(message = "Mã khoa không được để trống")
     private Department department;
 
-    @OneToMany(mappedBy = "student")
-    private List<Student> students;
-
-    @OneToMany(mappedBy = "lecturer")
-    private List<Lecturer> lecturers;
-
-    @OneToMany(mappedBy = "classCommittee")
-    private List<ClassCommittee> classCommittees;
 }

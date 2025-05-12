@@ -12,6 +12,10 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "KhieuNai")
 public class Complaint {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdKhieuNai")
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "IdDon")

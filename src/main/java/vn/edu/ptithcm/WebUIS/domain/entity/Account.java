@@ -25,17 +25,17 @@ public class Account {
     @NotNull(message = "Vui lòng nhập mật khẩu")
     private String password;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MaQuyen")
     @NotNull(message = "Vui lòng chọn quyền")
     private Role role;
 
-    @OneToMany(mappedBy = "account")
-    private Student student;
+    // @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    // private Student student;
 
-    @OneToMany(mappedBy = "account")
-    private Lecturer lecturer;
+    // @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    // private Lecturer lecturer;
 
-    @OneToMany(mappedBy = "account")
-    private Employee employee;
+    // @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    // private Employee employee;
 }

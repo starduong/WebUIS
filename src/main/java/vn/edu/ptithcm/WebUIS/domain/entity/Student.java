@@ -19,7 +19,7 @@ public class Student {
     @Id
     @Column(name = "MaSV", length = 10)
     @NotNull(message = "Mã sinh viên không được để trống")
-    private String id;
+    private String studentId;
 
     @Column(name = "Ho", length = 50, nullable = false)
     @NotNull(message = "Họ không được để trống")
@@ -72,7 +72,7 @@ public class Student {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "MaTK")
+    @JoinColumn(name = "IdTK")
     @NotNull(message = "Tài khoản không được để trống")
     private Account account;
 
