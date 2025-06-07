@@ -5,14 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
+@Entity
+@Table(name = "CoVanHocTap")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "CoVanHocTap")
 public class AcademicAdvisor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +31,4 @@ public class AcademicAdvisor {
     @Column(name = "NgayQuyetDinh", nullable = false)
     @NotNull(message = "Ngày quyết định không được để trống")
     private LocalDate decisionDate;
-
-    // Relationship added: One Advisor can assess many TrainingScores
-    @OneToMany(mappedBy = "academicAdvisor", fetch = FetchType.LAZY)
-    private List<TrainingScore> trainingScores;
 }

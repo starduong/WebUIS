@@ -5,12 +5,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+@Entity
+@Table(name = "GiangVien")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "GiangVien")
 public class Lecturer {
     @Id
     @Column(name = "MaGV", length = 10)
@@ -37,15 +37,10 @@ public class Lecturer {
     @NotNull(message = "CCCD không được để trống")
     private String citizenId;
 
-    @Column(name = "EmailTruong", length = 100)
-    @NotNull(message = "Email trường không được để trống")
-    @Email(message = "Email trường không hợp lệ")
-    private String schoolEmail;
-
-    @Column(name = "EmailCaNhan", length = 100)
-    @NotNull(message = "Email cá nhân không được để trống")
-    @Email(message = "Email cá nhân không hợp lệ")
-    private String personalEmail;
+    @Column(name = "Email", length = 100)
+    @NotNull(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
+    private String email;
 
     @Column(name = "HocVi", length = 50)
     @NotNull(message = "Học vị không được để trống")

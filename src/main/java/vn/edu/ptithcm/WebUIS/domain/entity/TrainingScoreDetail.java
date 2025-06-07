@@ -3,12 +3,12 @@ package vn.edu.ptithcm.WebUIS.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
+@Table(name = "ChiTietDiemRenLuyen")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "ChiTietDiemRenLuyen")
 public class TrainingScoreDetail {
 
     @EmbeddedId
@@ -16,12 +16,12 @@ public class TrainingScoreDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("trainingScoreId")
-    @JoinColumn(name = "IdDRL", insertable = false, updatable = false)
+    @JoinColumn(name = "IdDRL")
     private TrainingScore trainingScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("evaluationContentId")
-    @JoinColumn(name = "IdND", insertable = false, updatable = false)
+    @JoinColumn(name = "IdND")
     private EvaluationContent evaluationContent;
 
     @Column(name = "DiemSV")

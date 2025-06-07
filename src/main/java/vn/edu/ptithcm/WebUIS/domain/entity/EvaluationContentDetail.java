@@ -3,12 +3,12 @@ package vn.edu.ptithcm.WebUIS.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
+@Table(name = "ChiTietNoiDungDanhGia")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "ChiTietNoiDungDanhGia")
 public class EvaluationContentDetail {
 
     @EmbeddedId

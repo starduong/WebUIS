@@ -7,12 +7,12 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "BanCanSu")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "BanCanSu")
 public class ClassCommittee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

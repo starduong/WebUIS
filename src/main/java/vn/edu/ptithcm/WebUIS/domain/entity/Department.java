@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,6 +24,12 @@ public class Department {
     @NotNull(message = "Tên khoa không được để trống")
     private String departmentName;
 
+    @Column(name = "Loai", nullable = false)
+    @NotNull(message = "Loại khoa không được để trống")
+    private Boolean type;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "department")
     private List<ClassEntity> classes;
+
 }

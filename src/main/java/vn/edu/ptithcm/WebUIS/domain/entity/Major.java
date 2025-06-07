@@ -3,7 +3,6 @@ package vn.edu.ptithcm.WebUIS.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import java.util.List; // Added for relationship
 
 @Getter
 @Setter
@@ -20,8 +19,4 @@ public class Major {
     @Column(name = "TenCN", nullable = false, length = 100)
     @NotNull(message = "Tên chuyên ngành không được để trống")
     private String majorName;
-
-    // Relationship added: One Major can have many Students
-    @OneToMany(mappedBy = "major", fetch = FetchType.LAZY)
-    private List<Student> students;
 }

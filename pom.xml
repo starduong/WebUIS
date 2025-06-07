@@ -30,6 +30,17 @@
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>2.25.34</version>                <!-- Sử dụng phiên bản BOM mới nhất hoặc phù hợp -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 	<dependencies>
 		<!-- Cung cấp các endpoint để giám sát và quản lý ứng dụng (ví dụ: /actuator/health, /actuator/info) -->
 		<dependency>
@@ -110,6 +121,29 @@
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.turkraft.springfilter/core -->
+		<dependency>
+			<groupId>com.turkraft.springfilter</groupId>
+			<artifactId>core</artifactId>
+			<version>3.1.7</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
+		 <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>auth</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>regions</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>

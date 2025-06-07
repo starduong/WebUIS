@@ -10,15 +10,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import jakarta.servlet.http.HttpServletResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.RestResponse;
+import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
 @ControllerAdvice
-public class FormatRestResponse implements ResponseBodyAdvice<Object>{
+public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
+    @SuppressWarnings({ "null", "rawtypes" })
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         return true;
     }
 
+    @SuppressWarnings({ "null", "rawtypes" })
     @Override
     public Object beforeBodyWrite(
             Object body,
@@ -40,9 +43,10 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object>{
             return body;
         } else {
             restResponse.setData(body);
-            restResponse.setMessage("CALL API SUCCESS");
+            ApiMessage apiMessage = returnType.getMethodAnnotation(ApiMessage.class);
+            restResponse.setMessage(apiMessage != null ? apiMessage.value() : "CALL API SUCCESS");
         }
         return restResponse;
     }
-    
+
 }

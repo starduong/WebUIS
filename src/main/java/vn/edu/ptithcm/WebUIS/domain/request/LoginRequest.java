@@ -1,4 +1,4 @@
-package vn.edu.ptithcm.WebUIS.domain.dto;
+package vn.edu.ptithcm.WebUIS.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDTO {
+public class LoginRequest {
     @NotBlank(message = "Username không được để trống")
     private String username;
     @NotBlank(message = "Password không được để trống")

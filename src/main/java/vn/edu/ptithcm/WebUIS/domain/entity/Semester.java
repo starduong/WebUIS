@@ -2,16 +2,18 @@ package vn.edu.ptithcm.WebUIS.domain.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+@Entity
+@Table(name = "HocKy")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "HocKy")
 public class Semester {
 
     @Id
@@ -27,9 +29,11 @@ public class Semester {
     @NotNull(message = "Năm học không được để trống")
     private String academicYear;
 
-    @OneToMany(mappedBy = "semester", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "semester")
     private List<TrainingScore> trainingScores;
 
-    @OneToMany(mappedBy = "semester", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "semester")
     private List<AcademicResult> academicResults;
 }

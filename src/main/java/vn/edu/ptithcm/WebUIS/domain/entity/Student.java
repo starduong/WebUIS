@@ -8,12 +8,14 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+@Table(name = "SinhVien")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "SinhVien")
 public class Student {
 
     @Id
@@ -86,12 +88,15 @@ public class Student {
     @NotNull(message = "Lớp không được để trống")
     private ClassEntity classEntity;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student")
     private List<AcademicResult> academicResults;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student")
     private List<TrainingScore> trainingScores;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student")
     private List<ClassCommittee> classCommittees;
 }

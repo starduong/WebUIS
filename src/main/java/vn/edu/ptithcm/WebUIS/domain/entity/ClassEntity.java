@@ -1,5 +1,9 @@
 package vn.edu.ptithcm.WebUIS.domain.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -26,11 +30,15 @@ public class ClassEntity {
 
     @Column(name = "NienKhoa", nullable = false)
     @NotNull(message = "Niên khóa không được để trống")
-    private Integer academicYear;
+    private String academicYear;
 
     @ManyToOne
     @JoinColumn(name = "MaKhoa")
     @NotNull(message = "Mã khoa không được để trống")
     private Department department;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "classEntity")
+    private List<Student> students;
 
 }

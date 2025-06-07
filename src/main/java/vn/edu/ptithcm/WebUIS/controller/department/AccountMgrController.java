@@ -5,13 +5,17 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Account;
+import vn.edu.ptithcm.WebUIS.domain.request.CreateAccountRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.CreateAccountResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.service.AccountService;
+import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,27 +26,36 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/department")
+@RequestMapping("/api/v1/department/accounts")
+@Secured("EMPLOYEE_DEPARTMENT")
 public class AccountMgrController {
     private final AccountService accountService;
 
-    @GetMapping("/accounts")
-    public ResponseEntity<Collection<Account>> findAll() {
+    @GetMapping
+    @ApiMessage("Get all accounts")
+    public ResponseEntity<List<CreateAccountResponse>> findAll() {
         return ResponseEntity.ok(accountService.findAll());
     }
 
-    @PostMapping("/accounts")
-    public ResponseEntity<Account> createAccount(@Valid @RequestBody Account account) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.handleCreateAccount(account));
+    @PostMapping
+    @ApiMessage("Create a new account")
+    public ResponseEntity<CreateAccountResponse> createAccount(
+            @Valid @RequestBody CreateAccountRequest regCreateAccountDTO)
+            throws IdInValidException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                accountService
+                        .convertToResponseCreateAccountDTO(accountService.handleCreateAccount(regCreateAccountDTO)));
     }
 
-    @PutMapping("/accounts")
+    @PutMapping
+    @ApiMessage("Update an account")
     public ResponseEntity<Account> updateAccount(@Valid @RequestBody Account account) throws IdInValidException {
         return ResponseEntity.ok(accountService.handleUpdateAccount(account));
     }
 
-    @DeleteMapping("/accounts/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable Integer id) {
+    @DeleteMapping("/{id}")
+    @ApiMessage("Delete an account")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Integer id) throws IdInValidException {
         accountService.handleDeleteAccount(id);
         return ResponseEntity.noContent().build();
     }

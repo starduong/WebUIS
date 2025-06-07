@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "KhieuNai")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "KhieuNai")
 public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Complaint {
     @NotNull(message = "Mã sinh viên không được để trống")
     private Student student;
 
-    @Column(name = "NoiDung", length = 500, nullable = false)
+    @Column(name = "NoiDung", columnDefinition = "MEDIUMTEXT")
     @NotNull(message = "Nội dung không được để trống")
     private String content;
 

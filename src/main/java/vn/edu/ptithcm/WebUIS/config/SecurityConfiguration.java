@@ -24,17 +24,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 
-import lombok.RequiredArgsConstructor;
+import vn.edu.ptithcm.WebUIS.domain.enumeration.RoleEnum;
+import vn.edu.ptithcm.WebUIS.util.Constants;
 import vn.edu.ptithcm.WebUIS.util.SecurityUtil;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration {
     @Value("${duong.jwt.base64-secret}")
     public String jwtBase64Secret;
 
-    private final ObjectMapper objectMapper; // Injected by Spring automatically lombok
+    private final ObjectMapper objectMapper;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,10 +54,26 @@ public class SecurityConfiguration {
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/login").permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        // Đường dẫn công khai
+                        .requestMatchers(Constants.Security.AUTH_WHITELIST).permitAll()
+
+                        // Quyền truy cập theo vai trò và đường dẫn API
+                        .requestMatchers("/api/v1/student/**").hasAnyAuthority(
+                                RoleEnum.STUDENT.getCode())
+                        .requestMatchers("/api/v1/advisor/**").hasAnyAuthority(
+                                RoleEnum.ACADEMIC_ADVISOR.getCode())
+                        .requestMatchers("/api/v1/class-committee/**").hasAnyAuthority(
+                                RoleEnum.CLASS_COMMITTEE.getCode())
+                        .requestMatchers("/api/v1/faculty/**").hasAnyAuthority(
+                                RoleEnum.EMPLOYEE_FACULTY.getCode())
+                        .requestMatchers("/api/v1/department/**").hasAuthority(
+                                RoleEnum.EMPLOYEE_DEPARTMENT.getCode())
+
+                        // Các đường dẫn khác yêu cầu xác thực
                         .anyRequest().authenticated())
-                // .anyRequest().permitAll())
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> jwt
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(authenticationEntryPoint()))
                 .formLogin(f -> f.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -72,7 +91,6 @@ public class SecurityConfiguration {
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtil.JWT_ALGORITHM.getName());
     }
 
-    // @FunctionalInterface
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
@@ -87,15 +105,17 @@ public class SecurityConfiguration {
         };
     }
 
-    // Chức năng: Lấy danh sách các quyền từ JWT
+    /**
+     * Chuyển đổi JWT thành danh sách các quyền
+     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName(SecurityUtil.AUTHORITIES_KEY);
+        grantedAuthoritiesConverter.setAuthoritiesClaimName(Constants.Security.AUTHORITIES_KEY);
+
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
-
 }
