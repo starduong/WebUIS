@@ -9,4 +9,6 @@ import vn.edu.ptithcm.WebUIS.domain.entity.Student;
 
 public interface ClassCommitteeRepository extends JpaRepository<ClassCommittee, Integer> {
     Optional<ClassCommittee> findByStudent(Student student);
+
+    boolean existsByStudent(Student student);
 }

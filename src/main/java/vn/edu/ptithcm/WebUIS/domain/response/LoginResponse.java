@@ -14,34 +14,21 @@ public class LoginResponse {
     private String accessToken;
     @JsonProperty("user_login")
     private UserLogin userLogin;
-    @JsonProperty("user_role")
-    private UserRole userRole;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserLogin {
+        @JsonProperty("user_id")
         private String userId;
+        @JsonProperty("full_name")
         private String fullName;
-        private String schoolEmail;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserGetAccount {
-        private UserLogin user;
-        private UserRole role;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class UserRole {
-        private Integer id;
-        private String name;
+        @JsonProperty("email")
+        private String email;
+        @JsonProperty("role")
+        private String roleName;
+        @JsonProperty("position")
+        private String position;
     }
 }
