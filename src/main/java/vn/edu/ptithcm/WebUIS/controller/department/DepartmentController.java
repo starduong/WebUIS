@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import vn.edu.ptithcm.WebUIS.domain.entity.Announcement;
 import vn.edu.ptithcm.WebUIS.domain.entity.Department;
 import vn.edu.ptithcm.WebUIS.domain.entity.Employee;
 import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
@@ -104,6 +106,19 @@ public class DepartmentController {
     @ApiMessage("Danh sách học kỳ của lớp")
     public ResponseEntity<List<Semester>> getSemesterByClass(@PathVariable String classId) {
         return ResponseEntity.ok(semesterService.getSemesterByClass(classId));
+    }
+
+    /**
+     * Phòng CTSV tạo thông báo
+     * 
+     * @param announcement
+     * @return
+     */
+    @PostMapping("/announcements")
+    @ApiMessage("Phòng CTSV tạo thông báo")
+    public ResponseEntity<Announcement> createAnnouncement(@RequestBody Announcement announcement,
+            @RequestParam(value = "attachment", required = false) MultipartFile attachment) throws IOException {
+        return ResponseEntity.ok(departmentService.createAnnouncement(announcement, attachment));
     }
 
 }

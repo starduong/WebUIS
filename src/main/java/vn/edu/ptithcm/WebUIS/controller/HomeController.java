@@ -1,0 +1,32 @@
+package vn.edu.ptithcm.WebUIS.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.RequiredArgsConstructor;
+import vn.edu.ptithcm.WebUIS.domain.response.ResultPaginationDTO;
+import vn.edu.ptithcm.WebUIS.service.AnnouncementService;
+import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
+
+@RestController
+@RequestMapping("/api/v1/home")
+@RequiredArgsConstructor
+public class HomeController {
+    private final AnnouncementService announcementService;
+
+    /**
+     * Lấy danh sách thông báo
+     * 
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/announcements")
+    @ApiMessage("Lấy danh sách thông báo")
+    public ResponseEntity<ResultPaginationDTO> getAnnouncements(Pageable pageable) {
+        return ResponseEntity.ok(announcementService.getAnnouncements(pageable));
+    }
+
+}

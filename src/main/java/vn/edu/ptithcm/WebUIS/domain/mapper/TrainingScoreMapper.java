@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import vn.edu.ptithcm.WebUIS.domain.entity.ClassEntity;
 import vn.edu.ptithcm.WebUIS.domain.entity.Criterion;
 import vn.edu.ptithcm.WebUIS.domain.entity.EvaluationContent;
 import vn.edu.ptithcm.WebUIS.domain.entity.EvaluationContentDetail;
@@ -15,6 +19,7 @@ import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScore;
 import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScoreDetail;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreClassify;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreStatus;
+import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreByClassResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.department.TrainingScoreByFCSResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.CriterionResponse;
@@ -399,4 +404,37 @@ public class TrainingScoreMapper {
                 TrainingScoreClassify.fromScore(trainingScore.getTotalScore()),
                 trainingScore.getStatus());
     }
+
+    /**
+     * chuyển đổi danh sách TrainingScore thành TrainingScoreStatisticsResponse
+     * 
+     * @param trainingScores
+     * @return
+     */
+    public TrainingScoreStatisticsResponse convertTrainingScoreToStatisticsResponse(
+            List<TrainingScore> trainingScores) {
+        TrainingScoreStatisticsResponse response = new TrainingScoreStatisticsResponse();
+
+        ClassEntity classEntity = trainingScores.get(0).getStudent().getClassEntity();
+        response.setClassId(classEntity.getClassId());
+        response.setSemesterOrder(trainingScores.get(0).getSemester().getOrder().toString());
+        response.setSemesterYear(trainingScores.get(0).getSemester().getAcademicYear().toString());
+        response.setTotalStudent(trainingScores.size());
+
+        // Đếm số lượng từng loại phân loại
+        Map<TrainingScoreClassify, Long> classifyCountMap = trainingScores.stream()
+                .map(score -> TrainingScoreClassify.fromScore(score.getTotalScore()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        response.setTotalExcellent(classifyCountMap.getOrDefault(TrainingScoreClassify.EXCELLENT, 0L).intValue());
+        response.setTotalGood(classifyCountMap.getOrDefault(TrainingScoreClassify.GOOD, 0L).intValue());
+        response.setTotalFair(classifyCountMap.getOrDefault(TrainingScoreClassify.FAIR, 0L).intValue());
+        response.setTotalAverage(classifyCountMap.getOrDefault(TrainingScoreClassify.AVERAGE, 0L).intValue());
+        response.setTotalWeak(classifyCountMap.getOrDefault(TrainingScoreClassify.WEAK, 0L).intValue());
+        response.setTotalPoor(classifyCountMap.getOrDefault(TrainingScoreClassify.POOR, 0L).intValue());
+
+        return response;
+    }
+
 }

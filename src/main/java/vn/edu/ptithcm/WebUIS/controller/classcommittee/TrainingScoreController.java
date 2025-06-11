@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Student;
 import vn.edu.ptithcm.WebUIS.domain.request.SubmitTrainingScoreRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreByClassResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
 import vn.edu.ptithcm.WebUIS.service.ClassCommitteeService;
@@ -70,5 +71,24 @@ public class TrainingScoreController {
             @RequestBody SubmitTrainingScoreRequest submitTrainingScoreRequest) throws Exception {
         return ResponseEntity
                 .ok(classCommitteeService.submitTrainingScore(trainingScoreId, submitTrainingScoreRequest));
+    }
+
+    /**
+     * Thống kê điểm rèn luyện của sinh viên theo lớp và học kỳ
+     * 
+     * @param semesterId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/statistics")
+    @ApiMessage("Thống kê điểm rèn luyện của sinh viên theo lớp và học kỳ")
+    public ResponseEntity<TrainingScoreStatisticsResponse> getTrainingScoreStatistics(
+            @RequestParam("semesterId") Integer semesterId) throws Exception {
+        Student student = classCommitteeService.getCurrentStudentLogin();
+        String classId = student.getClassEntity().getClassId();
+        if (!classCommitteeService.isClassCommittee(classId)) {
+            throw new Exception("Bạn không có quyền truy cập");
+        }
+        return ResponseEntity.ok(trainingScoreService.getTrainingScoreStatistics(classId, semesterId));
     }
 }

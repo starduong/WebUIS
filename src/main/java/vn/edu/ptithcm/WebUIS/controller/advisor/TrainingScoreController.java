@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.ClassEntity;
 import vn.edu.ptithcm.WebUIS.domain.entity.Lecturer;
 import vn.edu.ptithcm.WebUIS.domain.request.SubmitTrainingScoreRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreByClassResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
 import vn.edu.ptithcm.WebUIS.service.AcademicAdvisorService;
@@ -64,6 +65,26 @@ public class TrainingScoreController {
         return ResponseEntity
                 .ok(academicAdvisorService.submitTrainingScore(trainingScoreId,
                         submitTrainingScoreRequest));
+    }
+
+    /**
+     * Thống kê điểm rèn luyện của sinh viên theo lớp và học kỳ
+     * 
+     * @param classId
+     * @param semesterId
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/statistics")
+    @ApiMessage("Thống kê điểm rèn luyện của sinh viên theo lớp và học kỳ")
+    public ResponseEntity<TrainingScoreStatisticsResponse> getTrainingScoreStatistics(
+            @RequestParam("semesterId") Integer semesterId) throws Exception {
+        Lecturer lecturer = academicAdvisorService.getCurrentLecturerLogin();
+        ClassEntity classEntity = academicAdvisorService.getClassByLecturer(lecturer);
+        if (!academicAdvisorService.isAdvisorOfClass(classEntity.getClassId())) {
+            throw new Exception("Bạn không có quyền truy cập");
+        }
+        return ResponseEntity.ok(trainingScoreService.getTrainingScoreStatistics(classEntity.getClassId(), semesterId));
     }
 
 }

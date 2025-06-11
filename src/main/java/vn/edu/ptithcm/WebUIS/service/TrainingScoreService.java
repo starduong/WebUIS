@@ -12,6 +12,7 @@ import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScore;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.RoleEnum;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreStatus;
 import vn.edu.ptithcm.WebUIS.domain.mapper.TrainingScoreMapper;
+import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreByClassResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.department.TrainingScoreByFCSResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
@@ -54,7 +55,9 @@ public class TrainingScoreService {
         List<TrainingScoreByFCSResponse> responses = new ArrayList<>();
         for (TrainingScore trainingScore : trainingScores) {
             if (role == RoleEnum.EMPLOYEE_FACULTY) {
-                if (trainingScore.getStatus() == TrainingScoreStatus.WAIT_FACULTY) {
+                if (trainingScore.getStatus() == TrainingScoreStatus.WAIT_FACULTY
+                        || trainingScore.getStatus() == TrainingScoreStatus.WAIT_DEPARTMENT
+                        || trainingScore.getStatus() == TrainingScoreStatus.COMPLETED) {
                     responses.add(trainingScoreMapper.convertTrainingScoreToFCSDTO(trainingScore));
                 }
             } else if (role == RoleEnum.EMPLOYEE_DEPARTMENT) {
@@ -100,6 +103,14 @@ public class TrainingScoreService {
             return trainingScoreMapper.initFormTrainingScoreResponse(trainingScoreId);
         }
         return trainingScoreMapper.convertTrainingScoreToFormTrainingScoreResponse(trainingScore);
+    }
+
+    /**
+     * thống kê điểm rèn luyện của sinh viên theo lớp và học kỳ
+     */
+    public TrainingScoreStatisticsResponse getTrainingScoreStatistics(String classId, Integer semesterId) {
+        List<TrainingScore> trainingScores = trainingScoreRepository.findByClassIdAndSemesterId(classId, semesterId);
+        return trainingScoreMapper.convertTrainingScoreToStatisticsResponse(trainingScores);
     }
 
 }

@@ -32,7 +32,7 @@ public class Complaint {
 
     @Column(name = "NgayGui", nullable = false)
     @NotNull(message = "Ngày gửi không được để trống")
-    private LocalDate sentDate;
+    private LocalDate sendDate;
 
     @Column(name = "TrangThai", length = 20, nullable = false)
     @NotNull(message = "Trạng thái không được để trống")
@@ -41,4 +41,9 @@ public class Complaint {
     @ManyToOne
     @JoinColumn(name = "IdNVPB")
     private Employee employee;
+
+    @PrePersist
+    public void prePersist() {
+        this.sendDate = LocalDate.now();
+    }
 }
