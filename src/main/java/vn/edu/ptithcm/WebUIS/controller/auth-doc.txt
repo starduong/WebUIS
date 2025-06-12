@@ -1,0 +1,24 @@
+ Cách 2: Dùng JWT làm reset token
+Tạo token JWT có:
+accountId
+exp (thời gian hết hạn, ví dụ 15 phút)
+purpose: "reset"
+
+Gửi qua email
+
+Khi submit form reset:
+Giải mã JWT
+Xác minh purpose, thời gian và user
+Ưu điểm: không cần lưu DB
+
+Nhược điểm: phải đảm bảo JWT được ký và không bị lộ key
+
+Luồng hoạt động chuẩn:
+
+POST /forgot-password (gửi email có JWT token)
+
+Người dùng bấm link → frontend → form đổi mật khẩu
+
+POST /reset-password với token + new password
+
+Backend giải mã JWT, xác minh → đổi mật khẩu

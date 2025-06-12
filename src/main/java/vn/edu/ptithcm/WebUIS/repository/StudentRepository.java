@@ -16,4 +16,6 @@ public interface StudentRepository extends JpaRepository<Student, String> {
 
     boolean existsByCitizenId(String citizenId);
 
+    Student findByUniversityEmail(String email);
+
 }

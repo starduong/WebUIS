@@ -21,10 +21,13 @@ import vn.edu.ptithcm.WebUIS.domain.entity.Department;
 import vn.edu.ptithcm.WebUIS.domain.entity.Employee;
 import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
 import vn.edu.ptithcm.WebUIS.domain.request.UpdateEmployeeRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.password.ChangePasswordRequest;
 import vn.edu.ptithcm.WebUIS.domain.response.ClassEntityResponse;
+import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.employee.EmployeeResponse;
 import vn.edu.ptithcm.WebUIS.exception.BadRequestException;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
+import vn.edu.ptithcm.WebUIS.service.AccountService;
 import vn.edu.ptithcm.WebUIS.service.ClassService;
 import vn.edu.ptithcm.WebUIS.service.DepartmentService;
 import vn.edu.ptithcm.WebUIS.service.EmployeeService;
@@ -39,6 +42,7 @@ public class DepartmentController {
     private final EmployeeService employeeService;
     private final ClassService classService;
     private final SemesterService semesterService;
+    private final AccountService accountService;
 
     /**
      * Lấy thông tin nhân viên đang đăng nhập
@@ -70,6 +74,23 @@ public class DepartmentController {
             throw new BadRequestException("Bạn không có quyền cập nhật thông tin nhân viên");
         }
         return ResponseEntity.ok(employeeService.updateEmployee(employee.getId(), updateEmployeeRequest, avatar));
+    }
+
+    /**
+     * Đổi mật khẩu
+     * 
+     * @param request Request body chứa accountId, oldPassword, newPassword,
+     *                confirmPassword
+     * @return
+     */
+    @PutMapping("/change-password")
+    @ApiMessage("Đổi mật khẩu")
+    public ResponseEntity<MessageResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request)
+            throws IdInValidException {
+        Employee employee = employeeService.getCurrentEmployeeLogin();
+        request.setAccountId(employee.getAccount().getId());
+        accountService.changePassword(request);
+        return ResponseEntity.ok(MessageResponse.of("Mật khẩu đã được đổi thành công"));
     }
 
     /**

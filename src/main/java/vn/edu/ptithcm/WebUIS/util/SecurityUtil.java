@@ -174,4 +174,56 @@ public class SecurityUtil {
             throw e;
         }
     }
+
+    /**
+     * Tạo token đặt lại mật khẩu
+     * 
+     * @param email     Email của tài khoản cần đặt lại mật khẩu
+     * @param accountId ID của tài khoản
+     * @return JWT token
+     */
+    public String generatePasswordResetToken(String email, Integer accountId) {
+        Instant now = Instant.now();
+        // Token hết hạn sau 15 phút
+        Instant validity = now.plus(15, ChronoUnit.MINUTES);
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .subject(email)
+                .claim("accountId", accountId)
+                .claim("purpose", "reset")
+                .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
+
+    /**
+     * Kiểm tra tính hợp lệ của token đặt lại mật khẩu
+     * 
+     * @param token Token cần kiểm tra
+     * @return Đối tượng Jwt nếu token hợp lệ
+     * @throws Exception Nếu token không hợp lệ hoặc không phải token đặt lại mật
+     *                   khẩu
+     */
+    public Jwt validatePasswordResetToken(String token) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+                getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+        try {
+            Jwt jwt = jwtDecoder.decode(token);
+
+            // Kiểm tra purpose của token
+            String purpose = jwt.getClaim("purpose");
+            if (!"reset".equals(purpose)) {
+                throw new IllegalArgumentException("Invalid token purpose");
+            }
+
+            return jwt;
+        } catch (Exception e) {
+            log.error("Password Reset Token error: {}", e.getMessage());
+            throw e;
+        }
+    }
 }

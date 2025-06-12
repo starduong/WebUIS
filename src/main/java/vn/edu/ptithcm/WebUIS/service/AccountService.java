@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Account;
+import vn.edu.ptithcm.WebUIS.domain.entity.Employee;
+import vn.edu.ptithcm.WebUIS.domain.entity.Lecturer;
+import vn.edu.ptithcm.WebUIS.domain.entity.Student;
 import vn.edu.ptithcm.WebUIS.domain.request.CreateAccountRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.password.ChangePasswordRequest;
 import vn.edu.ptithcm.WebUIS.domain.response.CreateAccountResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.repository.AccountRepository;
@@ -24,7 +28,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final StudentRepository studentRepository;
-    private final LecturerRepository teacherRepository;
+    private final LecturerRepository lecturerRepository;
     private final EmployeeRepository employeeRepository;
 
     public List<CreateAccountResponse> findAll() {
@@ -82,7 +86,7 @@ public class AccountService {
         if (studentRepository.findByAccount(curAccount) != null) {
             throw new IdInValidException("Account is used by a student");
         }
-        if (teacherRepository.findByAccount(curAccount) != null) {
+        if (lecturerRepository.findByAccount(curAccount) != null) {
             throw new IdInValidException("Account is used by a teacher");
         }
         if (employeeRepository.findByAccount(curAccount) != null) {
@@ -108,5 +112,64 @@ public class AccountService {
     // find account by refresh token and username
     public Account findByRefreshTokenAndUsername(String refreshToken, String username) {
         return accountRepository.findByRefreshTokenAndUsername(refreshToken, username);
+    }
+
+    /**
+     * Cập nhật mật khẩu cho tài khoản
+     * 
+     * @param accountId   ID của tài khoản
+     * @param newPassword Mật khẩu mới
+     * @throws IdInValidException Nếu không tìm thấy tài khoản
+     */
+    public void updatePassword(Integer accountId, String newPassword) throws IdInValidException {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IdInValidException("Không tìm thấy tài khoản"));
+
+        String hashPassword = passwordEncoder.encode(newPassword);
+        account.setPassword(hashPassword);
+        accountRepository.save(account);
+    }
+
+    /**
+     * Tìm tài khoản của người dùng dựa trên email
+     * 
+     * @param email Email của người dùng
+     * @return Tài khoản của người dùng hoặc null nếu không tìm thấy
+     */
+    public Account findAccountByEmail(String email) {
+        Student student = studentRepository.findByUniversityEmail(email);
+        if (student != null) {
+            return student.getAccount();
+        }
+        Lecturer lecturer = lecturerRepository.findByEmail(email);
+        if (lecturer != null) {
+            return lecturer.getAccount();
+        }
+        Employee employee = employeeRepository.findByEmail(email);
+        if (employee != null) {
+            return employee.getAccount();
+        }
+        return null;
+    }
+
+    /**
+     * Đổi mật khẩu
+     * 
+     * @param request Request body chứa accountId, oldPassword, newPassword,
+     *                confirmPassword
+     * @throws IdInValidException Nếu không tìm thấy tài khoản
+     */
+    public void changePassword(ChangePasswordRequest request) throws IdInValidException {
+        Account account = accountRepository.findById(request.getAccountId())
+                .orElseThrow(() -> new IdInValidException("Không tìm thấy tài khoản"));
+        if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
+            throw new IdInValidException("Mật khẩu cũ không chính xác");
+        }
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new IdInValidException("Mật khẩu mới và mật khẩu xác nhận không khớp");
+        }
+        String hashPassword = passwordEncoder.encode(request.getNewPassword());
+        account.setPassword(hashPassword);
+        accountRepository.save(account);
     }
 }

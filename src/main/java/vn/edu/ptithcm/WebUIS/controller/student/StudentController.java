@@ -16,9 +16,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Student;
 import vn.edu.ptithcm.WebUIS.domain.request.UpdateStudentRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.password.ChangePasswordRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.AcademicResultResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.StudentResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
+import vn.edu.ptithcm.WebUIS.service.AccountService;
 import vn.edu.ptithcm.WebUIS.service.StudentService;
 import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
@@ -31,6 +34,7 @@ import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 public class StudentController {
 
     private final StudentService studentService;
+    private final AccountService accountService;
 
     /**
      * Lấy thông tin sinh viên
@@ -72,6 +76,23 @@ public class StudentController {
             throws IdInValidException, IOException {
         Student student = studentService.getCurrentStudentLogin();
         return ResponseEntity.ok(studentService.updateStudent(student.getStudentId(), studentRequest, avatar));
+    }
+
+    /**
+     * Đổi mật khẩu
+     * 
+     * @param request Request body chứa accountId, oldPassword, newPassword,
+     *                confirmPassword
+     * @return
+     */
+    @PutMapping("/change-password")
+    @ApiMessage("Đổi mật khẩu")
+    public ResponseEntity<MessageResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request)
+            throws IdInValidException {
+        Student student = studentService.getCurrentStudentLogin();
+        request.setAccountId(student.getAccount().getId());
+        accountService.changePassword(request);
+        return ResponseEntity.ok(MessageResponse.of("Mật khẩu đã được đổi thành công"));
     }
 
 }

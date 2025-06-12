@@ -18,9 +18,12 @@ import vn.edu.ptithcm.WebUIS.domain.entity.ClassEntity;
 import vn.edu.ptithcm.WebUIS.domain.entity.Lecturer;
 import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
 import vn.edu.ptithcm.WebUIS.domain.request.UpdateLecturerRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.password.ChangePasswordRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.lecturer.LecturerResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.service.AcademicAdvisorService;
+import vn.edu.ptithcm.WebUIS.service.AccountService;
 import vn.edu.ptithcm.WebUIS.service.SemesterService;
 import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
@@ -31,6 +34,7 @@ public class AdvisorController {
 
     private final AcademicAdvisorService academicAdvisorService;
     private final SemesterService semesterService;
+    private final AccountService accountService;
 
     /**
      * Lấy thông tin giảng viên đang đăng nhập
@@ -77,6 +81,23 @@ public class AdvisorController {
         Lecturer lecturer = academicAdvisorService.getCurrentLecturerLogin();
         ClassEntity classEntity = academicAdvisorService.getClassByLecturer(lecturer);
         return ResponseEntity.ok(semesterService.getSemesterByClass(classEntity.getClassId()));
+    }
+
+    /**
+     * Đổi mật khẩu
+     * 
+     * @param request Request body chứa accountId, oldPassword, newPassword,
+     *                confirmPassword
+     * @return
+     */
+    @PutMapping("/change-password")
+    @ApiMessage("Đổi mật khẩu")
+    public ResponseEntity<MessageResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request)
+            throws IdInValidException {
+        Lecturer lecturer = academicAdvisorService.getCurrentLecturerLogin();
+        request.setAccountId(lecturer.getAccount().getId());
+        accountService.changePassword(request);
+        return ResponseEntity.ok(MessageResponse.of("Mật khẩu đã được đổi thành công"));
     }
 
 }

@@ -2,6 +2,7 @@ package vn.edu.ptithcm.WebUIS.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,9 +17,13 @@ import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Account;
 import vn.edu.ptithcm.WebUIS.domain.mapper.AccountMapper;
 import vn.edu.ptithcm.WebUIS.domain.request.LoginRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.password.ForgotPasswordRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.password.ResetPasswordRequest;
 import vn.edu.ptithcm.WebUIS.domain.response.LoginResponse;
+import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.service.AccountService;
+import vn.edu.ptithcm.WebUIS.service.EmailService;
 import vn.edu.ptithcm.WebUIS.util.SecurityUtil;
 import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
@@ -36,9 +41,13 @@ public class AuthenticationController {
     private final SecurityUtil securityUtil;
     private final AccountService accountService;
     private final AccountMapper accountMapper;
+    private final EmailService emailService;
 
     @Value("${duong.jwt.refresh-token-validity-in-seconds}")
     private long jwtRefreshTokenValidityInSeconds;
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
 
     @PostMapping(value = "/login")
     @ApiMessage("Login")
@@ -142,4 +151,66 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
                 .body(null);
     }
+
+    /**
+     * Gửi email đặt lại mật khẩu
+     * 
+     * @param request Request body chứa username
+     * @param request
+     * @return
+     */
+    @PostMapping("/forgot-password")
+    @ApiMessage("Gửi email đặt lại mật khẩu")
+    public ResponseEntity<MessageResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        try {
+            // Tìm tài khoản theo username
+            Account account = accountService.findAccountByEmail(request.getEmail());
+            if (account == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(MessageResponse.of("Không tìm thấy tài khoản với username này"));
+            }
+
+            // Tạo token đặt lại mật khẩu
+            String token = securityUtil.generatePasswordResetToken(request.getEmail(), account.getId());
+
+            // Tạo link đặt lại mật khẩu
+            String resetLink = frontendUrl + "/reset-password?token=" + token;
+
+            // Gửi email
+            emailService.sendPasswordResetEmail(request.getEmail(), resetLink);
+
+            return ResponseEntity.ok(MessageResponse.of("Email đặt lại mật khẩu đã được gửi"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.of("Có lỗi xảy ra khi gửi email đặt lại mật khẩu: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Đặt lại mật khẩu
+     * 
+     * @param request Request body chứa token và mật khẩu mới
+     * @return
+     */
+    @PostMapping("/reset-password")
+    @ApiMessage("Đặt lại mật khẩu")
+    public ResponseEntity<MessageResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        try {
+            // Kiểm tra tính hợp lệ của token
+            Jwt jwt = securityUtil.validatePasswordResetToken(request.getToken());
+
+            // Lấy thông tin từ token
+            // String username = jwt.getSubject();
+            Integer accountId = jwt.getClaim("accountId");
+
+            // Cập nhật mật khẩu mới
+            accountService.updatePassword(accountId, request.getNewPassword());
+
+            return ResponseEntity.ok(MessageResponse.of("Mật khẩu đã được đặt lại thành công"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(MessageResponse.of("Token không hợp lệ hoặc đã hết hạn: " + e.getMessage()));
+        }
+    }
+
 }

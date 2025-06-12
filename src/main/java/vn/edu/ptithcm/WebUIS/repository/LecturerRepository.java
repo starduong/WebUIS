@@ -12,4 +12,6 @@ public interface LecturerRepository extends JpaRepository<Lecturer, String> {
     Lecturer findByAccount(Account account);
 
     boolean existsByCitizenId(String citizenId);
+
+    Lecturer findByEmail(String email);
 }
