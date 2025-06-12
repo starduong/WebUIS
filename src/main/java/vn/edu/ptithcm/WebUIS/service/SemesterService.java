@@ -18,6 +18,22 @@ public class SemesterService {
     private final SemesterRepository semesterRepository;
     private final ClassRepository classRepository;
 
+    /**
+     * Lấy học kỳ theo id
+     * 
+     * @param semesterId
+     * @return
+     */
+    public Semester getSemesterById(Integer semesterId) {
+        return semesterRepository.findById(semesterId).orElse(null);
+    }
+
+    /**
+     * Lấy học kỳ theo lớp
+     * 
+     * @param classId
+     * @return
+     */
     public List<Semester> getSemesterByClass(String classId) {
         ClassEntity classEntity = classRepository.findById(classId).orElse(null);
         List<Semester> semesters = semesterRepository.findAll(Sort.by(Sort.Direction.DESC, "academicYear", "order"));
@@ -36,6 +52,28 @@ public class SemesterService {
                 if (semesterStartYear >= classStartYear && semesterFinishYear <= classFinishYear) {
                     result.add(semester);
                 }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * tìm tất cả các lớp có học kỳ X
+     * 
+     * @param semesterId
+     * @return
+     */
+    public List<ClassEntity> getAllClassesBySemesterId(Integer semesterId) {
+        Semester semester = semesterRepository.findById(semesterId).orElse(null);
+        int semesterStartYear = extractStartYear(semester.getAcademicYear());
+        int semesterFinishYear = extractFinishYear(semester.getAcademicYear());
+        List<ClassEntity> classEntities = classRepository.findAll();
+        List<ClassEntity> result = new ArrayList<>();
+        for (ClassEntity classEntity : classEntities) {
+            int classStartYear = extractStartYear(classEntity.getAcademicYear());
+            int classFinishYear = extractFinishYear(classEntity.getAcademicYear());
+            if (classStartYear <= semesterStartYear && classFinishYear >= semesterFinishYear) {
+                result.add(classEntity);
             }
         }
         return result;
@@ -64,4 +102,5 @@ public class SemesterService {
             return 0;
         }
     }
+
 }

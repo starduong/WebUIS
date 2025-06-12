@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreStatus;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,20 +39,20 @@ public class TrainingScore {
 
     @Column(name = "ThoiGianBatDau")
     @NotNull(message = "Thời gian bắt đầu không được để trống")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "ThoiGianKetThuc")
     @NotNull(message = "Thời gian kết thúc không được để trống")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "NgaySVCham")
-    private LocalDate studentAssessmentDate;
+    private LocalDateTime studentAssessmentDate;
 
     @Column(name = "NgayBCSCham")
-    private LocalDate classCommitteeAssessmentDate;
+    private LocalDateTime classCommitteeAssessmentDate;
 
     @Column(name = "NgayCVHTCham")
-    private LocalDate advisorAssessmentDate;
+    private LocalDateTime advisorAssessmentDate;
 
     @Column(name = "TrangThai")
     @Enumerated(EnumType.STRING)

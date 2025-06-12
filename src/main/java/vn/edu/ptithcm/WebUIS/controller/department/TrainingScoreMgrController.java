@@ -2,6 +2,7 @@ package vn.edu.ptithcm.WebUIS.controller.department;
 
 import vn.edu.ptithcm.WebUIS.service.DepartmentService;
 import vn.edu.ptithcm.WebUIS.service.EmployeeService;
+import vn.edu.ptithcm.WebUIS.service.SemesterService;
 import vn.edu.ptithcm.WebUIS.service.TrainingScoreService;
 import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
@@ -21,9 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Employee;
+import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.RoleEnum;
 import vn.edu.ptithcm.WebUIS.domain.request.SubmitTrainingScoreRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.department.AdjustTimeTrainingScoreRequest;
 import vn.edu.ptithcm.WebUIS.domain.request.department.CreateTrainingScoreByClassAndSemesterRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.department.TrainingScoreByFCSResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
@@ -36,6 +40,7 @@ public class TrainingScoreMgrController {
     private final DepartmentService departmentService;
     private final TrainingScoreService trainingScoreService;
     private final EmployeeService employeeService;
+    private final SemesterService semesterService;
 
     /**
      * Lấy danh sách điểm rèn luyện theo lớp và học kỳ
@@ -60,34 +65,72 @@ public class TrainingScoreMgrController {
     }
 
     /**
-     * Tạo điểm rèn luyện mới cho tất cả sinh viên trong lớp và học kỳ
+     * Phòng CTSV tạo điểm rèn luyện mới
+     * =========================================================================================================
+     * 
      */
-    @PostMapping
+    @PostMapping("/create")
     @ApiMessage("Tạo điểm rèn luyện mới cho tất cả sinh viên trong lớp và học kỳ")
-    public ResponseEntity<List<TrainingScoreByFCSResponse>> createNewTrainingScoreForAllStudent(
-            @Valid @RequestBody CreateTrainingScoreByClassAndSemesterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                departmentService.createNewTrainingScoreForAllStudentInClassAndSemester(request));
+    public ResponseEntity<MessageResponse> createNewTrainingScoreForAllStudent(
+            @Valid @RequestBody CreateTrainingScoreByClassAndSemesterRequest request) throws IdInValidException {
+        Semester semester = semesterService.getSemesterById(request.getSemesterId());
+        if (request.getClassId() == null) {
+            departmentService.createTrainingScoreForAllClassInSemester(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(MessageResponse
+                    .of("Tạo điểm rèn luyện mới cho tất cả lớp trong học kỳ " + semester.getOrder() + " "
+                            + semester.getAcademicYear()));
+        }
+        departmentService.createNewTrainingScoreForAllStudentInClassAndSemester(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(MessageResponse.of("Tạo điểm rèn luyện mới cho tất cả sinh viên trong lớp " + request.getClassId()
+                        + " trong học kỳ " + semester.getOrder() + " " + semester.getAcademicYear()));
+    }
+
+    /**
+     * Phòng CTSV điều chỉnh thời gian đánh giá điểm rèn luyện
+     * =========================================================================================================
+     */
+    @PutMapping("/adjust-time")
+    @ApiMessage("Phòng CTSV điều chỉnh thời gian đánh giá điểm rèn luyện của tất cả sinh viên trong lớp và học kỳ")
+    public ResponseEntity<MessageResponse> adjustTimeTrainingScoreOfAllStudentInClassAndSemester(
+            @RequestBody AdjustTimeTrainingScoreRequest request) throws IdInValidException {
+        Semester semester = semesterService.getSemesterById(request.getSemesterId());
+        if (request.getClassId() == null) {
+            departmentService.adjustTimeTrainingScoreOfAllClassInSemester(request);
+            return ResponseEntity.ok()
+                    .body(MessageResponse.of("Thời gian đánh giá điểm rèn luyện của tất cả lớp trong học kỳ "
+                            + semester.getOrder() + " " + semester.getAcademicYear() + " đã được điều chỉnh"));
+        }
+        departmentService.adjustTimeTrainingScoreOfAllStudentInClassAndSemester(request);
+        return ResponseEntity.ok().body(MessageResponse.of("Thời gian đánh giá điểm rèn luyện của lớp "
+                + request.getClassId() + " trong học kỳ "
+                + semester.getOrder() + " " + semester.getAcademicYear() + " đã được điều chỉnh"));
     }
 
     /**
      * Phòng CTSV chỉnh sửa điểm rèn luyện
+     * 
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
+     * @return
+     * @throws IdInValidException
      */
     @PutMapping("/{trainingScoreId}")
     @ApiMessage("Phòng CTSV chỉnh sửa điểm rèn luyện")
-    public ResponseEntity<FormTrainingScoreResponse> updateTrainingScore(@PathVariable Integer trainingScoreId,
-            @RequestBody SubmitTrainingScoreRequest submitTrainingScoreRequest) throws IdInValidException {
-        return ResponseEntity.ok(departmentService.updateTrainingScore(trainingScoreId, submitTrainingScoreRequest));
+    public ResponseEntity<FormTrainingScoreResponse> updateTrainingScore(
+            @PathVariable Integer trainingScoreId, @RequestBody SubmitTrainingScoreRequest request)
+            throws IdInValidException {
+        return ResponseEntity.ok(departmentService.updateTrainingScore(trainingScoreId, request));
     }
 
     /**
      * Phòng CTSV duyệt tất cả điểm rèn luyện của sinh viên trong lớp theo học kỳ
      */
-    @PutMapping("/approve/{classId}/{semesterId}")
+    @PutMapping("/approve")
     @ApiMessage("Phòng CTSV duyệt tất cả điểm rèn luyện của sinh viên trong lớp theo học kỳ")
     public ResponseEntity<List<TrainingScoreByFCSResponse>> approveTrainingScore(
-            @PathVariable("classId") String classId,
-            @PathVariable("semesterId") Integer semesterId) {
+            @RequestParam("classId") String classId,
+            @RequestParam("semesterId") Integer semesterId) {
         return ResponseEntity.ok(departmentService.approveTrainingScore(classId, semesterId));
     }
 

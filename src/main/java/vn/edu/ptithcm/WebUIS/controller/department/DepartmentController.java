@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,7 +111,7 @@ public class DepartmentController {
      * @param facultyId
      * @return
      */
-    @GetMapping("/classes/{facultyId}")
+    @GetMapping("/classes")
     @ApiMessage("Danh sách lớp của khoa")
     public ResponseEntity<List<ClassEntityResponse>> getAllClasses(@PathVariable String facultyId) {
         Department faculty = departmentService.getDepartmentById(facultyId);
@@ -140,6 +141,21 @@ public class DepartmentController {
     public ResponseEntity<Announcement> createAnnouncement(@RequestBody Announcement announcement,
             @RequestParam(value = "attachment", required = false) MultipartFile attachment) throws IOException {
         return ResponseEntity.ok(departmentService.createAnnouncement(announcement, attachment));
+    }
+
+    /**
+     * xoá thông báo
+     * 
+     * @param announcementId
+     * @return
+     * @throws IdInValidException
+     */
+    @DeleteMapping("/announcements/{announcementId}")
+    @ApiMessage("xoá thông báo")
+    public ResponseEntity<MessageResponse> deleteAnnouncement(@PathVariable Integer announcementId)
+            throws IdInValidException {
+        departmentService.deleteAnnouncement(announcementId);
+        return ResponseEntity.ok(MessageResponse.of("Thông báo đã được xoá thành công"));
     }
 
 }

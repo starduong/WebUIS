@@ -1,6 +1,6 @@
 package vn.edu.ptithcm.WebUIS.domain.response.student;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,9 +20,9 @@ public class TrainingScoreBySemesterResponse {
     private Integer id;
     private SemesterResponse semester;
     @JsonProperty("start_date")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     @JsonProperty("end_date")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     @JsonProperty("total_score")
     private Integer totalScore;
     private TrainingScoreClassify classification;

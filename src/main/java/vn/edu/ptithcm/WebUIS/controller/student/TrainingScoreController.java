@@ -55,10 +55,8 @@ public class TrainingScoreController {
      */
     @PostMapping("/{trainingScoreId}")
     @ApiMessage("Sinh viên đánh giá điểm rèn luyện của sinh viên")
-    public ResponseEntity<FormTrainingScoreResponse> evaluateTrainingScore(
-            @PathVariable Integer trainingScoreId,
-            @RequestBody SubmitTrainingScoreRequest formTrainingScoreRequest)
-            throws IdInValidException {
+    public ResponseEntity<FormTrainingScoreResponse> evaluateTrainingScore(@PathVariable Integer trainingScoreId,
+            @RequestBody SubmitTrainingScoreRequest formTrainingScoreRequest) throws IdInValidException {
         return ResponseEntity.ok(studentService.submitTrainingScore(trainingScoreId, formTrainingScoreRequest));
     }
 }

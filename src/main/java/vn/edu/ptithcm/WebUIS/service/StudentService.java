@@ -1,7 +1,7 @@
 package vn.edu.ptithcm.WebUIS.service;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,16 +12,20 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.AcademicResult;
 import vn.edu.ptithcm.WebUIS.domain.entity.Account;
+import vn.edu.ptithcm.WebUIS.domain.entity.Complaint;
 import vn.edu.ptithcm.WebUIS.domain.entity.EvaluationContent;
 import vn.edu.ptithcm.WebUIS.domain.entity.Student;
 import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScore;
 import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScoreDetail;
 import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScoreDetailPK;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreStatus;
+import vn.edu.ptithcm.WebUIS.domain.mapper.ComplaintMapper;
 import vn.edu.ptithcm.WebUIS.domain.mapper.StudentMapper;
 import vn.edu.ptithcm.WebUIS.domain.mapper.TrainingScoreMapper;
 import vn.edu.ptithcm.WebUIS.domain.request.SubmitTrainingScoreRequest;
 import vn.edu.ptithcm.WebUIS.domain.request.UpdateStudentRequest;
+import vn.edu.ptithcm.WebUIS.domain.request.student.CreateComplaintRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.ComplaintDetailResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.AcademicResultResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.StudentResponse;
@@ -29,6 +33,7 @@ import vn.edu.ptithcm.WebUIS.exception.BadRequestException;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.repository.AcademicResultRepository;
 import vn.edu.ptithcm.WebUIS.repository.AccountRepository;
+import vn.edu.ptithcm.WebUIS.repository.ComplaintRepository;
 import vn.edu.ptithcm.WebUIS.repository.EvaluationContentRepository;
 import vn.edu.ptithcm.WebUIS.repository.StudentRepository;
 import vn.edu.ptithcm.WebUIS.repository.TrainingScoreDetailRepository;
@@ -49,6 +54,8 @@ public class StudentService {
     private final TrainingScoreMapper trainingScoreMapper;
     private final EvaluationContentRepository evaluationContentRepository;
     private final TrainingScoreDetailRepository trainingScoreDetailRepository;
+    private final ComplaintRepository complaintRepository;
+    private final ComplaintMapper complaintMapper;
 
     /**
      * Lấy thông tin sinh viên đang đăng nhập
@@ -179,14 +186,14 @@ public class StudentService {
     /**
      * Sinh viên đánh giá điểm rèn luyện
      * 
-     * @param trainingScoreId            id điểm rèn luyện
-     * @param submitTrainingScoreRequest request đánh giá điểm rèn luyện
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
      * @return
      * @throws IdInValidException
      */
     @Transactional(rollbackOn = { IdInValidException.class, BadRequestException.class })
     public FormTrainingScoreResponse submitTrainingScore(Integer trainingScoreId,
-            SubmitTrainingScoreRequest submitTrainingScoreRequest)
+            SubmitTrainingScoreRequest request)
             throws IdInValidException {
         TrainingScore trainingScore = trainingScoreRepository.findById(trainingScoreId).orElse(null);
         if (trainingScore == null) {
@@ -198,7 +205,7 @@ public class StudentService {
         }
 
         // tạo trainingScoreDetail
-        List<SubmitTrainingScoreRequest.TrainingScoreDetailRequest> trainingScoreDetailRequests = submitTrainingScoreRequest
+        List<SubmitTrainingScoreRequest.TrainingScoreDetailRequest> trainingScoreDetailRequests = request
                 .getTrainingScoreDetails();
         for (SubmitTrainingScoreRequest.TrainingScoreDetailRequest evaluationContentDetailRequest : trainingScoreDetailRequests) {
             EvaluationContent evaluationContent = evaluationContentRepository
@@ -212,8 +219,30 @@ public class StudentService {
             trainingScoreDetailRepository.save(trainingScoreDetail);
         }
         trainingScore.setStatus(TrainingScoreStatus.WAIT_CLASS_COMMITTEE);
-        trainingScore.setStudentAssessmentDate(LocalDate.now());
+        trainingScore.setStudentAssessmentDate(LocalDateTime.now());
         trainingScoreRepository.save(trainingScore);
         return trainingScoreMapper.convertTrainingScoreToFormTrainingScoreResponse(trainingScore);
+    }
+
+    /**
+     * tạo khiếu nại
+     * 
+     * @param complaintRequest
+     * @return
+     * @throws IOException
+     */
+    public ComplaintDetailResponse createComplaint(CreateComplaintRequest complaintRequest, MultipartFile attachment)
+            throws IOException {
+        Complaint complaint = new Complaint();
+        Student student = getCurrentStudentLogin();
+        complaint.setStudent(student);
+        complaint.setTitle(complaintRequest.getTitle());
+        complaint.setContent(complaintRequest.getContent());
+        if (attachment != null) {
+            complaint.setAttachmentUrl(s3UploadFileUtil.uploadFile(attachment, "temps"));
+        }
+        complaint.setStatus("PROCESSING");
+        complaintRepository.save(complaint);
+        return complaintMapper.toComplaintDetailResponse(complaint);
     }
 }

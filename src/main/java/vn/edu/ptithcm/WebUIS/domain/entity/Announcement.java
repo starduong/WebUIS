@@ -1,6 +1,6 @@
 package vn.edu.ptithcm.WebUIS.domain.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -40,7 +40,7 @@ public class Announcement {
     private String attachmentUrl;
 
     @Column(name = "NgayDang", nullable = false)
-    private LocalDate sendDate;
+    private LocalDateTime sendDate;
 
     @JsonIgnore
     @ManyToOne
@@ -49,6 +49,6 @@ public class Announcement {
 
     @PrePersist
     public void prePersist() {
-        this.sendDate = LocalDate.now();
+        this.sendDate = LocalDateTime.now();
     }
 }

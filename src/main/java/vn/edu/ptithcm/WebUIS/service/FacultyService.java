@@ -56,14 +56,13 @@ public class FacultyService {
     /**
      * Khoa chỉnh sửa điểm rèn luyện
      * 
-     * @param trainingScoreId            id điểm rèn luyện
-     * @param submitTrainingScoreRequest request đánh giá điểm rèn luyện
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
      * @return
      * @throws IdInValidException
      */
     @Transactional(rollbackOn = { IdInValidException.class, BadRequestException.class })
-    public FormTrainingScoreResponse updateTrainingScore(Integer trainingScoreId,
-            SubmitTrainingScoreRequest submitTrainingScoreRequest)
+    public FormTrainingScoreResponse updateTrainingScore(Integer trainingScoreId, SubmitTrainingScoreRequest request)
             throws IdInValidException {
         TrainingScore trainingScore = trainingScoreRepository.findById(trainingScoreId).orElse(null);
         if (trainingScore == null) {
@@ -75,7 +74,7 @@ public class FacultyService {
         // tính tổng điểm của khoa
         Integer advisorScore = 0;
         // cập nhật trainingScoreDetail
-        List<SubmitTrainingScoreRequest.TrainingScoreDetailRequest> trainingScoreDetailRequests = submitTrainingScoreRequest
+        List<SubmitTrainingScoreRequest.TrainingScoreDetailRequest> trainingScoreDetailRequests = request
                 .getTrainingScoreDetails();
         for (SubmitTrainingScoreRequest.TrainingScoreDetailRequest evaluationContentDetailRequest : trainingScoreDetailRequests) {
             EvaluationContent evaluationContent = evaluationContentRepository

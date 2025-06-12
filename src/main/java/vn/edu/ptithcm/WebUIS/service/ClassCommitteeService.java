@@ -1,6 +1,6 @@
 package vn.edu.ptithcm.WebUIS.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -70,14 +70,13 @@ public class ClassCommitteeService {
     /**
      * Ban cán sự đánh giá điểm rèn luyện
      * 
-     * @param trainingScoreId            id điểm rèn luyện
-     * @param submitTrainingScoreRequest request đánh giá điểm rèn luyện
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
      * @return
      * @throws IdInValidException
      */
     @Transactional(rollbackOn = { IdInValidException.class, BadRequestException.class })
-    public FormTrainingScoreResponse submitTrainingScore(Integer trainingScoreId,
-            SubmitTrainingScoreRequest submitTrainingScoreRequest)
+    public FormTrainingScoreResponse submitTrainingScore(Integer trainingScoreId, SubmitTrainingScoreRequest request)
             throws IdInValidException {
         TrainingScore trainingScore = trainingScoreRepository.findById(trainingScoreId).orElse(null);
         if (trainingScore == null) {
@@ -89,7 +88,7 @@ public class ClassCommitteeService {
         }
 
         // tạo trainingScoreDetail
-        List<SubmitTrainingScoreRequest.TrainingScoreDetailRequest> trainingScoreDetailRequests = submitTrainingScoreRequest
+        List<SubmitTrainingScoreRequest.TrainingScoreDetailRequest> trainingScoreDetailRequests = request
                 .getTrainingScoreDetails();
         for (SubmitTrainingScoreRequest.TrainingScoreDetailRequest evaluationContentDetailRequest : trainingScoreDetailRequests) {
             EvaluationContent evaluationContent = evaluationContentRepository
@@ -109,7 +108,7 @@ public class ClassCommitteeService {
         }
 
         trainingScore.setStatus(TrainingScoreStatus.WAIT_ADVISOR);
-        trainingScore.setClassCommitteeAssessmentDate(LocalDate.now());
+        trainingScore.setClassCommitteeAssessmentDate(LocalDateTime.now());
         trainingScoreRepository.save(trainingScore);
         return trainingScoreMapper.convertTrainingScoreToFormTrainingScoreResponse(trainingScore);
     }

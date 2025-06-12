@@ -64,29 +64,26 @@ public class TrainingScoreController {
     /**
      * Khoa chỉnh sửa điểm rèn luyện
      * 
-     * @param trainingScoreId
-     * @param submitTrainingScoreRequest
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
      * @return
      * @throws Exception
      */
     @PostMapping("/{trainingScoreId}")
     @ApiMessage("Khoa chỉnh sửa điểm rèn luyện")
     public ResponseEntity<FormTrainingScoreResponse> evaluateTrainingScore(
-            @PathVariable("trainingScoreId") Integer trainingScoreId,
-            @RequestBody SubmitTrainingScoreRequest submitTrainingScoreRequest) throws Exception {
-        return ResponseEntity
-                .ok(facultyService.updateTrainingScore(trainingScoreId,
-                        submitTrainingScoreRequest));
+            @PathVariable Integer trainingScoreId, @RequestBody SubmitTrainingScoreRequest request) throws Exception {
+        return ResponseEntity.ok(facultyService.updateTrainingScore(trainingScoreId, request));
     }
 
     /**
      * Khoa duyệt tất cả điểm rèn luyện của sinh viên trong lớp theo học kỳ
      */
-    @PutMapping("/approve/{classId}/{semesterId}")
+    @PutMapping("/approve")
     @ApiMessage("Khoa duyệt tất cả điểm rèn luyện của sinh viên trong lớp theo học kỳ")
     public ResponseEntity<List<TrainingScoreByFCSResponse>> approveTrainingScore(
-            @PathVariable("classId") String classId,
-            @PathVariable("semesterId") Integer semesterId) {
+            @RequestParam("classId") String classId,
+            @RequestParam("semesterId") Integer semesterId) {
         return ResponseEntity.ok(facultyService.approveTrainingScore(classId, semesterId));
     }
 

@@ -19,8 +19,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubmitTrainingScoreRequest {
-    @JsonProperty("training_score_id")
-    private Integer trainingScoreId;
     @JsonProperty("training_score_details")
     private List<TrainingScoreDetailRequest> trainingScoreDetails;
 

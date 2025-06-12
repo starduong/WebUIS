@@ -25,4 +25,8 @@ public interface TrainingScoreRepository
         boolean existsByStudentIdAndSemesterId(@Param("studentId") String studentId,
                         @Param("semesterId") Integer semesterId);
 
+        @Query("SELECT ts FROM TrainingScore ts JOIN FETCH ts.student JOIN FETCH ts.semester WHERE ts.student.studentId = :studentId AND ts.semester.id = :semesterId")
+        TrainingScore findByStudentIdAndSemesterId(@Param("studentId") String studentId,
+                        @Param("semesterId") Integer semesterId);
+
 }

@@ -52,19 +52,16 @@ public class TrainingScoreController {
     /**
      * CVHT đánh giá điểm rèn luyện
      * 
-     * @param trainingScoreId
-     * @param submitTrainingScoreRequest
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
      * @return
      * @throws Exception
      */
     @PostMapping("/{trainingScoreId}")
     @ApiMessage("CVHT đánh giá điểm rèn luyện")
     public ResponseEntity<FormTrainingScoreResponse> evaluateTrainingScore(
-            @PathVariable("trainingScoreId") Integer trainingScoreId,
-            @RequestBody SubmitTrainingScoreRequest submitTrainingScoreRequest) throws Exception {
-        return ResponseEntity
-                .ok(academicAdvisorService.submitTrainingScore(trainingScoreId,
-                        submitTrainingScoreRequest));
+            @PathVariable Integer trainingScoreId, @RequestBody SubmitTrainingScoreRequest request) throws Exception {
+        return ResponseEntity.ok(academicAdvisorService.submitTrainingScore(trainingScoreId, request));
     }
 
     /**

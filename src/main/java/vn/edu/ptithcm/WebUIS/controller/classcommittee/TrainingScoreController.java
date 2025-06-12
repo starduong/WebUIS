@@ -59,18 +59,16 @@ public class TrainingScoreController {
     /**
      * Ban cán sự đánh giá điểm rèn luyện
      * 
-     * @param trainingScoreId
-     * @param submitTrainingScoreRequest
+     * @param trainingScoreId id điểm rèn luyện
+     * @param request         request đánh giá điểm rèn luyện
      * @return
      * @throws Exception
      */
     @PostMapping("/{trainingScoreId}")
     @ApiMessage("Ban cán sự đánh giá điểm rèn luyện")
     public ResponseEntity<FormTrainingScoreResponse> evaluateTrainingScore(
-            @PathVariable("trainingScoreId") Integer trainingScoreId,
-            @RequestBody SubmitTrainingScoreRequest submitTrainingScoreRequest) throws Exception {
-        return ResponseEntity
-                .ok(classCommitteeService.submitTrainingScore(trainingScoreId, submitTrainingScoreRequest));
+            @PathVariable Integer trainingScoreId, @RequestBody SubmitTrainingScoreRequest request) throws Exception {
+        return ResponseEntity.ok(classCommitteeService.submitTrainingScore(trainingScoreId, request));
     }
 
     /**
