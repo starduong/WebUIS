@@ -60,7 +60,7 @@ public class SecurityConfiguration {
 
                         // Quyền truy cập theo vai trò và đường dẫn API
                         .requestMatchers("/api/v1/student/**").hasAnyAuthority(
-                                RoleEnum.STUDENT.getCode())
+                                RoleEnum.STUDENT.getCode(), RoleEnum.CLASS_COMMITTEE.getCode())
                         .requestMatchers("/api/v1/advisor/**").hasAnyAuthority(
                                 RoleEnum.ACADEMIC_ADVISOR.getCode())
                         .requestMatchers("/api/v1/class-committee/**").hasAnyAuthority(

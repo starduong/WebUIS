@@ -60,6 +60,9 @@ public class TrainingScoreMapper {
                         0));
             }
 
+            // Sắp xếp tiêu chí theo ID
+            departmentCriteriaResponses.sort((c1, c2) -> c1.getId().compareTo(c2.getId()));
+
             return new TrainingScoreByFCSResponse(
                     trainingScore.getId(),
                     trainingScore.getStudent().getStudentId(),
@@ -100,6 +103,9 @@ public class TrainingScoreMapper {
                     totalScore));
         }
 
+        // Sắp xếp tiêu chí theo ID
+        departmentCriteriaResponses.sort((c1, c2) -> c1.getId().compareTo(c2.getId()));
+
         return new TrainingScoreByFCSResponse(
                 trainingScore.getId(),
                 trainingScore.getStudent().getStudentId(),
@@ -129,6 +135,10 @@ public class TrainingScoreMapper {
             // Lấy tất cả nội dung đánh giá thuộc tiêu chí này
             List<EvaluationContent> criterionContents = evaluationContentRepository
                     .findByCriterionId(criterion.getId());
+
+            // Sắp xếp nội dung đánh giá theo ID
+            criterionContents.sort((c1, c2) -> c1.getId().compareTo(c2.getId()));
+
             List<EvaluationContentResponse> evaluationContentResponses = new ArrayList<>();
 
             // Tính tổng điểm tối đa cho tiêu chí
@@ -159,6 +169,9 @@ public class TrainingScoreMapper {
                                 0 // academicAdvisorScore
                         ));
                     }
+
+                    // Sắp xếp chi tiết nội dung đánh giá theo ID
+                    evaluationContentDetailResponses.sort((d1, d2) -> d1.getId().compareTo(d2.getId()));
                 }
 
                 // Thêm nội dung đánh giá vào danh sách
@@ -180,6 +193,9 @@ public class TrainingScoreMapper {
                     0, // score (total score for this criterion)
                     evaluationContentResponses));
         }
+
+        // Sắp xếp tiêu chí theo ID
+        criterionResponses.sort((c1, c2) -> c1.getId().compareTo(c2.getId()));
 
         return new FormTrainingScoreResponse(
                 trainingScoreId,
@@ -250,6 +266,9 @@ public class TrainingScoreMapper {
 
             criterionResponses.add(criterionResponse);
         }
+
+        // Sort criterion responses by ID to maintain consistent order
+        criterionResponses.sort((cr1, cr2) -> cr1.getId().compareTo(cr2.getId()));
 
         // Create and return the response
         return new FormTrainingScoreResponse(
@@ -346,6 +365,9 @@ public class TrainingScoreMapper {
 
                     childContentResponses.add(childResponse);
                 }
+
+                // Sort child content responses by ID to maintain consistent order
+                childContentResponses.sort((cr1, cr2) -> cr1.getId().compareTo(cr2.getId()));
             }
 
             // Create and add EvaluationContentResponse
@@ -360,6 +382,9 @@ public class TrainingScoreMapper {
 
             responses.add(response);
         }
+
+        // Sort responses by ID to maintain consistent order
+        responses.sort((r1, r2) -> r1.getId().compareTo(r2.getId()));
 
         return responses;
     }
