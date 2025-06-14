@@ -22,8 +22,11 @@ public final class Constants {
                 "/login",
                 "/api/v1/auth/login",
                 "/api/v1/auth/refresh-token",
+                "/api/v1/auth/forgot-password",
+                "/api/v1/auth/reset-password",
                 "/swagger-ui/**",
-                "/v3/api-docs/**"
+                "/v3/api-docs/**",
+                "/api/v1/home/announcements/**"
         };
 
         private Security() {

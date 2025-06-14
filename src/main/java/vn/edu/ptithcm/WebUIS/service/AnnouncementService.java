@@ -48,4 +48,14 @@ public class AnnouncementService {
         return result;
     }
 
+    /**
+     * Lấy thông báo theo id
+     * 
+     * @param id
+     * @return
+     */
+    public Announcement getAnnouncementById(Integer id) {
+        return announcementRepository.findById(id).orElse(null);
+    }
+
 }

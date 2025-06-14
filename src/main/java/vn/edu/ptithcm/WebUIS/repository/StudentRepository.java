@@ -1,6 +1,7 @@
 package vn.edu.ptithcm.WebUIS.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import vn.edu.ptithcm.WebUIS.domain.entity.Account;
@@ -16,6 +17,7 @@ public interface StudentRepository extends JpaRepository<Student, String> {
 
     boolean existsByCitizenId(String citizenId);
 
+    @Query("SELECT s FROM Student s WHERE s.universityEmail = :email")
     Student findByUniversityEmail(String email);
 
 }

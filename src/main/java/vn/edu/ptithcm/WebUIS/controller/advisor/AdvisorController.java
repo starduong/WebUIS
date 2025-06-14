@@ -19,11 +19,13 @@ import vn.edu.ptithcm.WebUIS.domain.entity.Lecturer;
 import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
 import vn.edu.ptithcm.WebUIS.domain.request.UpdateLecturerRequest;
 import vn.edu.ptithcm.WebUIS.domain.request.password.ChangePasswordRequest;
+import vn.edu.ptithcm.WebUIS.domain.response.ClassEntityResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.lecturer.LecturerResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.service.AcademicAdvisorService;
 import vn.edu.ptithcm.WebUIS.service.AccountService;
+import vn.edu.ptithcm.WebUIS.service.ClassService;
 import vn.edu.ptithcm.WebUIS.service.SemesterService;
 import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
@@ -35,6 +37,7 @@ public class AdvisorController {
     private final AcademicAdvisorService academicAdvisorService;
     private final SemesterService semesterService;
     private final AccountService accountService;
+    private final ClassService classService;
 
     /**
      * Lấy thông tin giảng viên đang đăng nhập
@@ -67,6 +70,19 @@ public class AdvisorController {
         Lecturer lecturer = academicAdvisorService.getCurrentLecturerLogin();
         return ResponseEntity
                 .ok(academicAdvisorService.updateLecturer(lecturer.getLecturerId(), updateLecturerRequest, avatar));
+    }
+
+    /**
+     * Lấy ra tên lớp đang cố vấn
+     * 
+     * @return
+     * @throws IdInValidException
+     */
+    @GetMapping("/class-name")
+    @ApiMessage("Lấy ra tên lớp đang cố vấn")
+    public ResponseEntity<ClassEntityResponse> getClassByLecturer() throws IdInValidException {
+        Lecturer lecturer = academicAdvisorService.getCurrentLecturerLogin();
+        return ResponseEntity.ok(classService.getClassByLecturer(lecturer));
     }
 
     /**

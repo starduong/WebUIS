@@ -75,7 +75,7 @@ public class AccountMapper {
         } else if (roleName.equals("EMPLOYEE_DEPARTMENT")) {
             Employee employee = employeeRepository.findByAccount(account);
             if (employee != null && employee.getStatus()
-                    && employee.getDepartment().getDepartmentName().equals("CTSV")) {
+                    && employee.getDepartment().getDepartmentId().equals("CTSV")) {
                 userLogin.setUserId(employee.getId());
                 userLogin.setFullName(employee.getLastName() + " " + employee.getFirstName());
                 userLogin.setEmail(employee.getEmail());

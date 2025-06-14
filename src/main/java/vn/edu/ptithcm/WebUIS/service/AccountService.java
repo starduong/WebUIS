@@ -138,15 +138,15 @@ public class AccountService {
      */
     public Account findAccountByEmail(String email) {
         Student student = studentRepository.findByUniversityEmail(email);
-        if (student != null) {
+        if (student != null && student.getStatus()) {
             return student.getAccount();
         }
         Lecturer lecturer = lecturerRepository.findByEmail(email);
-        if (lecturer != null) {
+        if (lecturer != null && lecturer.getStatus()) {
             return lecturer.getAccount();
         }
         Employee employee = employeeRepository.findByEmail(email);
-        if (employee != null) {
+        if (employee != null && employee.getStatus()) {
             return employee.getAccount();
         }
         return null;

@@ -190,7 +190,8 @@ public class AuthenticationController {
             // Gửi email
             emailService.sendPasswordResetEmail(request.getEmail(), resetLink);
 
-            return ResponseEntity.ok(MessageResponse.of("Email đặt lại mật khẩu đã được gửi"));
+            return ResponseEntity
+                    .ok(MessageResponse.of("Email đặt lại mật khẩu đã được gửi: \n" + resetLink));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(MessageResponse.of("Có lỗi xảy ra khi gửi email đặt lại mật khẩu: " + e.getMessage()));
@@ -212,10 +213,15 @@ public class AuthenticationController {
 
             // Lấy thông tin từ token
             // String username = jwt.getSubject();
-            Integer accountId = jwt.getClaim("accountId");
+            Long accountId = jwt.getClaim("accountId");
+
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(MessageResponse.of("Mật khẩu mới và mật khẩu xác nhận không khớp"));
+            }
 
             // Cập nhật mật khẩu mới
-            accountService.updatePassword(accountId, request.getNewPassword());
+            accountService.updatePassword(accountId.intValue(), request.getNewPassword());
 
             return ResponseEntity.ok(MessageResponse.of("Mật khẩu đã được đặt lại thành công"));
         } catch (Exception e) {
