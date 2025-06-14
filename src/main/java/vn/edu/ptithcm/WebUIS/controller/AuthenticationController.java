@@ -21,6 +21,7 @@ import vn.edu.ptithcm.WebUIS.domain.request.password.ForgotPasswordRequest;
 import vn.edu.ptithcm.WebUIS.domain.request.password.ResetPasswordRequest;
 import vn.edu.ptithcm.WebUIS.domain.response.LoginResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
+import vn.edu.ptithcm.WebUIS.exception.BadRequestException;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.service.AccountService;
 import vn.edu.ptithcm.WebUIS.service.EmailService;
@@ -62,7 +63,12 @@ public class AuthenticationController {
         // Get user information based on role
         Account account = accountService.findByUsername(loginDTO.getUsername());
         if (account != null) {
-            responseLoginDTO.setUserLogin(accountMapper.convertAccountLoginToResponse(account));
+            LoginResponse.UserLogin userLogin = accountMapper.convertAccountLoginToResponse(account);
+            if (userLogin.getUserId() != null) {
+                responseLoginDTO.setUserLogin(userLogin);
+            } else {
+                throw new BadRequestException("login failed");
+            }
         }
         String accessToken = securityUtil.generateTokenLogin(authentication.getName(), responseLoginDTO.getUserLogin());
         responseLoginDTO.setAccessToken(accessToken);
@@ -104,7 +110,12 @@ public class AuthenticationController {
         // Get user information based on role
         Account account = accountService.findByUsername(username);
         if (account != null) {
-            responseLoginDTO.setUserLogin(accountMapper.convertAccountLoginToResponse(account));
+            LoginResponse.UserLogin userLogin = accountMapper.convertAccountLoginToResponse(account);
+            if (userLogin.getUserId() != null) {
+                responseLoginDTO.setUserLogin(userLogin);
+            } else {
+                throw new BadRequestException("login failed");
+            }
         }
         String accessToken = securityUtil.generateTokenLogin(username, responseLoginDTO.getUserLogin());
         responseLoginDTO.setAccessToken(accessToken);

@@ -110,7 +110,7 @@ public class StudentService {
         student.setDateOfBirth(studentRequest.getDateOfBirth());
         student.setGender(studentRequest.getGender());
         student.setPhoneNumber(studentRequest.getPhoneNumber());
-        if (studentRequest.getCitizenId() != null) {
+        if (studentRequest.getCitizenId() != null && !student.getCitizenId().equals(studentRequest.getCitizenId())) {
             if (studentRepository.existsByCitizenId(studentRequest.getCitizenId())) {
                 throw new IdInValidException("Số CCCD đã tồn tại");
             }

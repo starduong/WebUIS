@@ -98,7 +98,8 @@ public class AcademicAdvisorService {
         lecturer.setFirstName(updateLecturerRequest.getFirstName());
         lecturer.setGender(updateLecturerRequest.getGender());
         lecturer.setPhoneNumber(updateLecturerRequest.getPhoneNumber());
-        if (updateLecturerRequest.getCitizenId() != null) {
+        if (updateLecturerRequest.getCitizenId() != null
+                && !lecturer.getCitizenId().equals(updateLecturerRequest.getCitizenId())) {
             if (lecturerRepository.existsByCitizenId(updateLecturerRequest.getCitizenId())) {
                 throw new IdInValidException("Số CCCD đã tồn tại");
             }

@@ -1,7 +1,5 @@
 package vn.edu.ptithcm.WebUIS.domain.request;
 
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotNull;
@@ -23,10 +21,6 @@ public class UpdateLecturerRequest {
     @NotNull(message = "Tên không được để trống")
     private String firstName;
 
-    @JsonProperty("date_of_birth")
-    @NotNull(message = "Ngày sinh không được để trống")
-    private LocalDate dateOfBirth;
-
     @JsonProperty("gender")
     @NotNull(message = "Giới tính không được để trống")
     private Boolean gender;
@@ -47,7 +41,6 @@ public class UpdateLecturerRequest {
     private String academicRank;
 
     @JsonProperty("academic_title")
-    @NotNull(message = "Học hàm không được để trống")
     private String academicTitle;
 
     @JsonProperty("specialization")

@@ -47,7 +47,6 @@ public class Lecturer {
     private String academicRank;
 
     @Column(name = "HocHam", length = 50)
-    @NotNull(message = "Học hàm không được để trống")
     private String academicTitle;
 
     @Column(name = "ChuyenMon", length = 100)

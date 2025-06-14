@@ -62,19 +62,28 @@ public class AccountMapper {
                     userLogin.setRoleName(account.getRole().getName());
                     userLogin.setPosition("");
                 }
-            } else if (roleName.equals("EMPLOYEE_FACULTY") || roleName.equals("EMPLOYEE_DEPARTMENT")) {
-                Employee employee = employeeRepository.findByAccount(account);
-                if (employee != null && employee.getStatus()) {
-                    userLogin.setUserId(employee.getId());
-                    userLogin.setFullName(employee.getLastName() + " " + employee.getFirstName());
-                    userLogin.setEmail(employee.getEmail());
-                    userLogin.setRoleName(account.getRole().getName());
-                    userLogin.setPosition(employee.getDepartment().getDepartmentName());
-                }
-            } else {
-                throw new BadCredentialsException("login failed");
             }
-
+        } else if (roleName.equals("EMPLOYEE_FACULTY")) {
+            Employee employee = employeeRepository.findByAccount(account);
+            if (employee != null && employee.getStatus()) {
+                userLogin.setUserId(employee.getId());
+                userLogin.setFullName(employee.getLastName() + " " + employee.getFirstName());
+                userLogin.setEmail(employee.getEmail());
+                userLogin.setRoleName(account.getRole().getName());
+                userLogin.setPosition(employee.getDepartment().getDepartmentName());
+            }
+        } else if (roleName.equals("EMPLOYEE_DEPARTMENT")) {
+            Employee employee = employeeRepository.findByAccount(account);
+            if (employee != null && employee.getStatus()
+                    && employee.getDepartment().getDepartmentName().equals("CTSV")) {
+                userLogin.setUserId(employee.getId());
+                userLogin.setFullName(employee.getLastName() + " " + employee.getFirstName());
+                userLogin.setEmail(employee.getEmail());
+                userLogin.setRoleName(account.getRole().getName());
+                userLogin.setPosition(employee.getDepartment().getDepartmentName());
+            }
+        } else {
+            throw new BadCredentialsException("login failed");
         }
         return userLogin;
     }

@@ -90,7 +90,8 @@ public class EmployeeService {
         employee.setFirstName(updateEmployeeRequest.getFirstName());
         employee.setGender(updateEmployeeRequest.getGender());
         employee.setPhoneNumber(updateEmployeeRequest.getPhoneNumber());
-        if (updateEmployeeRequest.getCitizenId() != null) {
+        if (updateEmployeeRequest.getCitizenId() != null
+                && !employee.getCitizenId().equals(updateEmployeeRequest.getCitizenId())) {
             if (employeeRepository.existsByCitizenId(updateEmployeeRequest.getCitizenId())) {
                 throw new IdInValidException("Số CCCD đã tồn tại");
             }
