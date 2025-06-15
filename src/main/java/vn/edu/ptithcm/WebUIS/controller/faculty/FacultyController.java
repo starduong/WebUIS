@@ -68,7 +68,7 @@ public class FacultyController {
             @RequestParam(value = "avatar", required = false) MultipartFile avatar)
             throws IdInValidException, IOException {
         Employee employee = employeeService.getCurrentEmployeeLogin();
-        if (employeeService.isFaculty(employee)) {
+        if (!employeeService.isFaculty(employee)) {
             throw new BadRequestException("Bạn không có quyền cập nhật thông tin nhân viên");
         }
         return ResponseEntity.ok(employeeService.updateEmployee(employee.getId(), updateEmployeeRequest, avatar));

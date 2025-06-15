@@ -164,7 +164,7 @@ public class TrainingScoreMapper {
                                 detailContent.getId(),
                                 detailContent.getContent(),
                                 detailContent.getMaxScore(), // This is the score field
-                                0, // studentScore
+                                null, // studentScore
                                 0, // classCommitteeScore
                                 0 // academicAdvisorScore
                         ));
