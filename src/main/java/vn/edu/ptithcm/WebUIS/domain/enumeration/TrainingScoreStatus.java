@@ -6,5 +6,6 @@ public enum TrainingScoreStatus {
     WAIT_ADVISOR,
     WAIT_FACULTY,
     WAIT_DEPARTMENT,
-    COMPLETED;
+    COMPLETED,
+    EXPIRED;
 }

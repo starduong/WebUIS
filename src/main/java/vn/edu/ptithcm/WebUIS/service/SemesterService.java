@@ -1,6 +1,7 @@
 package vn.edu.ptithcm.WebUIS.service;
 
 import java.util.List;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.springframework.data.domain.Sort;
@@ -101,6 +102,39 @@ public class SemesterService {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    /**
+     * dựa vào năm hiện tại lấy ra danh sách học kỳ
+     * 
+     * @return
+     */
+    public Semester getCurrentSemester() {
+        LocalDate now = LocalDate.now();
+        List<Semester> semesters = semesterRepository.findAll();
+
+        for (Semester semester : semesters) {
+            int startYear = extractStartYear(semester.getAcademicYear());
+            int endYear = extractFinishYear(semester.getAcademicYear());
+
+            LocalDate startDate;
+            LocalDate endDate;
+
+            if (semester.getOrder() == 1) {
+                startDate = LocalDate.of(startYear, 9, 1); // 1/9/yyyy
+                endDate = LocalDate.of(startYear, 12, 31); // 31/1/yyyy+1
+            } else {
+                startDate = LocalDate.of(endYear, 1, 1); // 1/2/yyyy+1
+                endDate = LocalDate.of(endYear, 7, 31); // 31/7/yyyy+1
+            }
+
+            if ((now.isEqual(startDate) || now.isAfter(startDate)) &&
+                    (now.isEqual(endDate) || now.isBefore(endDate))) {
+                return semester;
+            }
+        }
+
+        return null; // Không khớp học kỳ nào
     }
 
 }

@@ -113,7 +113,7 @@ public class DepartmentController {
      */
     @GetMapping("/classes")
     @ApiMessage("Danh sách lớp của khoa")
-    public ResponseEntity<List<ClassEntityResponse>> getAllClasses(@PathVariable String facultyId) {
+    public ResponseEntity<List<ClassEntityResponse>> getAllClasses(@RequestParam String facultyId) {
         Department faculty = departmentService.getDepartmentById(facultyId);
         return ResponseEntity.ok(classService.getAllClassesOfFaculty(faculty));
     }
@@ -124,9 +124,9 @@ public class DepartmentController {
      * @param classId
      * @return
      */
-    @GetMapping("/semesters/{classId}")
+    @GetMapping("/semesters")
     @ApiMessage("Danh sách học kỳ của lớp")
-    public ResponseEntity<List<Semester>> getSemesterByClass(@PathVariable String classId) {
+    public ResponseEntity<List<Semester>> getSemesterByClass(@RequestParam String classId) {
         return ResponseEntity.ok(semesterService.getSemesterByClass(classId));
     }
 
@@ -140,6 +140,8 @@ public class DepartmentController {
     @ApiMessage("Phòng CTSV tạo thông báo")
     public ResponseEntity<Announcement> createAnnouncement(@RequestBody Announcement announcement,
             @RequestParam(value = "attachment", required = false) MultipartFile attachment) throws IOException {
+        Employee employee = employeeService.getCurrentEmployeeLogin();
+        announcement.setEmployee(employee);
         return ResponseEntity.ok(departmentService.createAnnouncement(announcement, attachment));
     }
 

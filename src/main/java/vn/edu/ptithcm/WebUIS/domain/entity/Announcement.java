@@ -44,7 +44,7 @@ public class Announcement {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "MaNV")
+    @JoinColumn(name = "MaNV", nullable = false)
     private Employee employee;
 
     @PrePersist

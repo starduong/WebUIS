@@ -54,6 +54,9 @@ public class TrainingScore {
     @Column(name = "NgayCVHTCham")
     private LocalDateTime advisorAssessmentDate;
 
+    @Column(name = "NgayKHOADuyet")
+    private LocalDateTime facultyAssessmentDate;
+
     @Column(name = "TrangThai")
     @Enumerated(EnumType.STRING)
     private TrainingScoreStatus status;

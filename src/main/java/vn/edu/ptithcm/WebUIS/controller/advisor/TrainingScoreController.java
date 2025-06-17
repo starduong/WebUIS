@@ -50,6 +50,15 @@ public class TrainingScoreController {
     }
 
     /**
+     * Lấy chi tiết form đánh giá điểm rèn luyện của sinh viên theo ID
+     */
+    @GetMapping("/{trainingScoreId}")
+    @ApiMessage("Lấy chi tiết form đánh giá điểm rèn luyện của sinh viên")
+    public ResponseEntity<FormTrainingScoreResponse> getFormTrainingScore(@PathVariable Integer trainingScoreId) {
+        return ResponseEntity.ok(trainingScoreService.getFormTrainingScore(trainingScoreId));
+    }
+
+    /**
      * CVHT đánh giá điểm rèn luyện
      * 
      * @param trainingScoreId id điểm rèn luyện

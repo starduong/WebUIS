@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,9 +108,9 @@ public class FacultyController {
      * @param classId
      * @return
      */
-    @GetMapping("/semesters/{classId}")
+    @GetMapping("/semesters")
     @ApiMessage("Danh sách học kỳ của lớp")
-    public ResponseEntity<List<Semester>> getSemesterByClass(@PathVariable String classId) {
+    public ResponseEntity<List<Semester>> getSemesterByClass(@RequestParam("classId") String classId) {
         return ResponseEntity.ok(semesterService.getSemesterByClass(classId));
     }
 

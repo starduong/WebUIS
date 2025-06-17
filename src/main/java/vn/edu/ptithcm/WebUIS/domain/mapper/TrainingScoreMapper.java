@@ -21,6 +21,7 @@ import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreClassify;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreStatus;
 import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreByClassResponse;
+import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreTimeResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.department.TrainingScoreByFCSResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.CriterionResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.EvaluationContentDetailResponse;
@@ -146,8 +147,9 @@ public class TrainingScoreMapper {
 
             // Xử lý từng nội dung đánh giá
             for (EvaluationContent evaluationContent : criterionContents) {
-                maxScore += evaluationContent.getMaxScore();
-
+                if (evaluationContent.getMaxScore() > 0) {
+                    maxScore += evaluationContent.getMaxScore();
+                }
                 // Lấy chi tiết nội dung đánh giá
                 List<EvaluationContentDetail> evaluationContentDetails = getEvaluationContentDetails(
                         evaluationContent.getId());
@@ -165,8 +167,8 @@ public class TrainingScoreMapper {
                                 detailContent.getContent(),
                                 detailContent.getMaxScore(), // This is the score field
                                 null, // studentScore
-                                0, // classCommitteeScore
-                                0 // academicAdvisorScore
+                                null, // classCommitteeScore
+                                null // academicAdvisorScore
                         ));
                     }
 
@@ -246,9 +248,11 @@ public class TrainingScoreMapper {
             List<EvaluationContentResponse> evaluationContents = createEvaluationContentResponses(details,
                     allDetailsByContentId);
 
-            // Calculate max score for criterion
+            // Calculate max score for criterion if getMaxScore > 0
             Integer maxScore = evaluationContents.stream()
-                    .mapToInt(EvaluationContentResponse::getMaxScore)
+                    .map(EvaluationContentResponse::getMaxScore)
+                    .filter(score -> score > 0)
+                    .mapToInt(Integer::intValue)
                     .sum();
 
             // Calculate total score for criterion
@@ -341,17 +345,14 @@ public class TrainingScoreMapper {
                     TrainingScoreDetail matchingDetail = allDetailsByContentId.get(childContent.getId());
 
                     // Get scores from the matching detail or set to null
-                    Integer studentScore = 0;
-                    Integer classCommitteeScore = 0;
-                    Integer advisorScore = 0;
+                    Integer studentScore = null;
+                    Integer classCommitteeScore = null;
+                    Integer advisorScore = null;
 
                     if (matchingDetail != null) {
-                        studentScore = matchingDetail.getStudentScore() != null ? matchingDetail.getStudentScore() : 0;
-                        classCommitteeScore = matchingDetail.getClassCommitteeScore() != null
-                                ? matchingDetail.getClassCommitteeScore()
-                                : 0;
-                        advisorScore = matchingDetail.getAdvisorScore() != null ? matchingDetail.getAdvisorScore()
-                                : 0;
+                        studentScore = matchingDetail.getStudentScore();
+                        classCommitteeScore = matchingDetail.getClassCommitteeScore();
+                        advisorScore = matchingDetail.getAdvisorScore();
                     }
 
                     // Create child content response
@@ -460,6 +461,21 @@ public class TrainingScoreMapper {
         response.setTotalPoor(classifyCountMap.getOrDefault(TrainingScoreClassify.POOR, 0L).intValue());
 
         return response;
+    }
+
+    /**
+     * chuyển đổi TrainingScore thành TrainingScoreTimeResponse
+     * 
+     * @param trainingScore
+     * @return
+     */
+    public TrainingScoreTimeResponse convertTrainingScoreToTimeResponse(TrainingScore trainingScore) {
+        return new TrainingScoreTimeResponse(
+                trainingScore.getSemester().getId(),
+                trainingScore.getSemester().getOrder(),
+                trainingScore.getSemester().getAcademicYear(),
+                trainingScore.getStartDate(),
+                trainingScore.getEndDate());
     }
 
 }

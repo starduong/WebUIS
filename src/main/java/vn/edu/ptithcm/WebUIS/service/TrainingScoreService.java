@@ -2,11 +2,14 @@ package vn.edu.ptithcm.WebUIS.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.TrainingScore;
 import vn.edu.ptithcm.WebUIS.domain.enumeration.RoleEnum;
@@ -14,9 +17,11 @@ import vn.edu.ptithcm.WebUIS.domain.enumeration.TrainingScoreStatus;
 import vn.edu.ptithcm.WebUIS.domain.mapper.TrainingScoreMapper;
 import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreByClassResponse;
+import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreTimeResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.department.TrainingScoreByFCSResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.TrainingScoreBySemesterResponse;
+import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
 import vn.edu.ptithcm.WebUIS.repository.TrainingScoreRepository;
 
 @Service
@@ -99,9 +104,14 @@ public class TrainingScoreService {
     public FormTrainingScoreResponse getFormTrainingScore(Integer trainingScoreId) {
         TrainingScore trainingScore = trainingScoreRepository.findById(trainingScoreId)
                 .orElseThrow(() -> new EntityNotFoundException("Điểm rèn luyện không tồn tại"));
-        if (trainingScore.getStatus() == TrainingScoreStatus.WAIT_STUDENT) {
+        TrainingScoreStatus status = trainingScore.getStatus();
+        // Trường hợp chưa tự đánh giá
+        boolean isNeedInit = (status == TrainingScoreStatus.EXPIRED && trainingScore.getStudentAssessmentDate() == null)
+                || status == TrainingScoreStatus.WAIT_STUDENT;
+        if (isNeedInit) {
             return trainingScoreMapper.initFormTrainingScoreResponse(trainingScoreId);
         }
+        // Trường hợp còn lại
         return trainingScoreMapper.convertTrainingScoreToFormTrainingScoreResponse(trainingScore);
     }
 
@@ -111,6 +121,46 @@ public class TrainingScoreService {
     public TrainingScoreStatisticsResponse getTrainingScoreStatistics(String classId, Integer semesterId) {
         List<TrainingScore> trainingScores = trainingScoreRepository.findByClassIdAndSemesterId(classId, semesterId);
         return trainingScoreMapper.convertTrainingScoreToStatisticsResponse(trainingScores);
+    }
+
+    @Scheduled(cron = "0 0 * * * *") // Chạy mỗi giờ
+    @Transactional
+    public void updateExpiredTrainingScores() {
+        List<TrainingScore> scores = trainingScoreRepository.findAllByStatusInAndEndDateBefore(
+                List.of(
+                        TrainingScoreStatus.WAIT_STUDENT,
+                        TrainingScoreStatus.WAIT_CLASS_COMMITTEE,
+                        TrainingScoreStatus.WAIT_ADVISOR,
+                        TrainingScoreStatus.WAIT_FACULTY),
+                LocalDateTime.now());
+
+        for (TrainingScore score : scores) {
+            score.setStatus(TrainingScoreStatus.EXPIRED);
+        }
+
+        trainingScoreRepository.saveAll(scores);
+    }
+
+    /**
+     * lấy thông tin thời gian bắt đầu và kết thúc điểm rèn luyện theo lớp hoặc tất
+     * cả ở kỳ hiện tại
+     * 
+     * @throws IdInValidException
+     */
+    public TrainingScoreTimeResponse getTrainingScoreTime(String classId, Integer semesterId)
+            throws IdInValidException {
+        if (classId == null) {
+            List<TrainingScore> trainingScores = trainingScoreRepository.findBySemesterId(semesterId);
+            if (trainingScores.isEmpty()) {
+                throw new IdInValidException("Không tìm thấy điểm rèn luyện");
+            }
+            return trainingScoreMapper.convertTrainingScoreToTimeResponse(trainingScores.get(0));
+        }
+        List<TrainingScore> trainingScores = trainingScoreRepository.findByClassIdAndSemesterId(classId, semesterId);
+        if (trainingScores.isEmpty()) {
+            throw new IdInValidException("Không tìm thấy điểm rèn luyện");
+        }
+        return trainingScoreMapper.convertTrainingScoreToTimeResponse(trainingScores.get(0));
     }
 
 }

@@ -1,5 +1,6 @@
 package vn.edu.ptithcm.WebUIS.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +98,7 @@ public class FacultyService {
         }
 
         trainingScore.setStatus(TrainingScoreStatus.WAIT_DEPARTMENT);
+        trainingScore.setFacultyAssessmentDate(LocalDateTime.now());
         trainingScore.setTotalScore(advisorScore);
         trainingScoreRepository.save(trainingScore);
         return trainingScoreMapper.convertTrainingScoreToFormTrainingScoreResponse(trainingScore);
@@ -114,6 +116,7 @@ public class FacultyService {
         List<TrainingScoreByFCSResponse> responses = new ArrayList<>();
         for (TrainingScore trainingScore : trainingScores) {
             if (trainingScore.getStatus() == TrainingScoreStatus.WAIT_FACULTY) {
+                trainingScore.setFacultyAssessmentDate(LocalDateTime.now());
                 trainingScore.setStatus(TrainingScoreStatus.WAIT_DEPARTMENT);
                 trainingScoreRepository.save(trainingScore);
                 responses.add(trainingScoreMapper.convertTrainingScoreToFCSDTO(trainingScore));

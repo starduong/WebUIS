@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
 import vn.edu.ptithcm.WebUIS.domain.entity.Announcement;
+import vn.edu.ptithcm.WebUIS.domain.entity.Semester;
 import vn.edu.ptithcm.WebUIS.domain.response.ResultPaginationDTO;
 import vn.edu.ptithcm.WebUIS.service.AnnouncementService;
+import vn.edu.ptithcm.WebUIS.service.SemesterService;
 import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 
 @RestController
@@ -18,6 +20,7 @@ import vn.edu.ptithcm.WebUIS.util.annotation.ApiMessage;
 @RequiredArgsConstructor
 public class HomeController {
     private final AnnouncementService announcementService;
+    private final SemesterService semesterService;
 
     /**
      * Lấy danh sách thông báo
@@ -41,6 +44,17 @@ public class HomeController {
     @ApiMessage("Lấy thông báo theo id")
     public ResponseEntity<Announcement> getAnnouncementById(@PathVariable Integer id) {
         return ResponseEntity.ok(announcementService.getAnnouncementById(id));
+    }
+
+    /**
+     * Lấy học kỳ hiện tại
+     * 
+     * @return
+     */
+    @GetMapping("/current-semester")
+    @ApiMessage("Học kỳ hiện tại")
+    public ResponseEntity<Semester> getCurrentSemester() {
+        return ResponseEntity.ok(semesterService.getCurrentSemester());
     }
 
 }

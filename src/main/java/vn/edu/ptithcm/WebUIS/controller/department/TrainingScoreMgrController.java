@@ -29,6 +29,7 @@ import vn.edu.ptithcm.WebUIS.domain.request.department.AdjustTimeTrainingScoreRe
 import vn.edu.ptithcm.WebUIS.domain.request.department.CreateTrainingScoreByClassAndSemesterRequest;
 import vn.edu.ptithcm.WebUIS.domain.response.MessageResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.TrainingScoreStatisticsResponse;
+import vn.edu.ptithcm.WebUIS.domain.response.classcommittee.TrainingScoreTimeResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.department.TrainingScoreByFCSResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
@@ -84,6 +85,20 @@ public class TrainingScoreMgrController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(MessageResponse.of("Tạo điểm rèn luyện mới cho tất cả sinh viên trong lớp " + request.getClassId()
                         + " trong học kỳ " + semester.getOrder() + " " + semester.getAcademicYear()));
+    }
+
+    /**
+     * lấy thông tin thời gian bắt đầu và kết thúc điểm rèn luyện theo lớp hoặc tất
+     * cả ở kỳ hiện tại
+     * 
+     * @throws IdInValidException
+     */
+    @GetMapping("/time")
+    @ApiMessage("Lấy thông tin thời gian bắt đầu và kết thúc điểm rèn luyện theo lớp hoặc tất cả ở kỳ hiện tại")
+    public ResponseEntity<TrainingScoreTimeResponse> getTrainingScoreTime(
+            @RequestParam(value = "classId", required = false) String classId,
+            @RequestParam("semesterId") Integer semesterId) throws IdInValidException {
+        return ResponseEntity.ok(trainingScoreService.getTrainingScoreTime(classId, semesterId));
     }
 
     /**

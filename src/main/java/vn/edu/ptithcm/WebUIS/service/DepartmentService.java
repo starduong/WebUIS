@@ -1,6 +1,7 @@
 package vn.edu.ptithcm.WebUIS.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,7 +175,7 @@ public class DepartmentService {
         for (Student student : students) {
             if (student.getStatus() != null && student.getStatus()) {
                 // check if training score exists
-                if (checkTrainingScoreExists(student.getStudentId(), semester.getId())) {
+                if (!checkTrainingScoreExists(student.getStudentId(), semester.getId())) {
                     continue;
                 }
                 TrainingScore trainingScore = trainingScoreRepository
@@ -182,9 +183,41 @@ public class DepartmentService {
                 if (request.getStartDate() != null) {
                     trainingScore.setStartDate(request.getStartDate());
                 }
+
                 if (request.getEndDate() != null) {
                     trainingScore.setEndDate(request.getEndDate());
+
+                    // --- Logic cập nhật trạng thái ---
+
+                    // 1. Nếu trạng thái hiện tại là EXPIRED và endDate mới > endDate cũ → khôi phục
+                    // trạng thái
+                    if (trainingScore.getStatus() == TrainingScoreStatus.EXPIRED
+                            && trainingScore.getEndDate() != null
+                            && trainingScore.getEndDate().isAfter(LocalDateTime.now())) {
+
+                        if (trainingScore.getStudentAssessmentDate() == null) {
+                            trainingScore.setStatus(TrainingScoreStatus.WAIT_STUDENT);
+                        } else if (trainingScore.getClassCommitteeAssessmentDate() == null) {
+                            trainingScore.setStatus(TrainingScoreStatus.WAIT_CLASS_COMMITTEE);
+                        } else if (trainingScore.getAdvisorAssessmentDate() == null) {
+                            trainingScore.setStatus(TrainingScoreStatus.WAIT_ADVISOR);
+                        } else {
+                            trainingScore.setStatus(TrainingScoreStatus.WAIT_FACULTY);
+                        }
+
+                        // 2. Nếu đang ở trạng thái chờ và endDate mới < thời điểm hiện tại hoặc
+                        // startDate > hiện tại → set EXPIRED
+                    } else if (List.of(
+                            TrainingScoreStatus.WAIT_STUDENT,
+                            TrainingScoreStatus.WAIT_CLASS_COMMITTEE,
+                            TrainingScoreStatus.WAIT_ADVISOR,
+                            TrainingScoreStatus.WAIT_FACULTY).contains(trainingScore.getStatus())
+                            && trainingScore.getEndDate().isBefore(LocalDateTime.now())) {
+
+                        trainingScore.setStatus(TrainingScoreStatus.EXPIRED);
+                    }
                 }
+
                 trainingScoreRepository.save(trainingScore);
             }
         }
