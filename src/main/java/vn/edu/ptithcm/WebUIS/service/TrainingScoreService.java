@@ -120,7 +120,11 @@ public class TrainingScoreService {
      */
     public TrainingScoreStatisticsResponse getTrainingScoreStatistics(String classId, Integer semesterId) {
         List<TrainingScore> trainingScores = trainingScoreRepository.findByClassIdAndSemesterId(classId, semesterId);
-        return trainingScoreMapper.convertTrainingScoreToStatisticsResponse(trainingScores);
+        // Lấy điểm rèn luyện đã HOÀN THÀNH
+        List<TrainingScore> completedTrainingScores = trainingScores.stream()
+                .filter(trainingScore -> trainingScore.getStatus() == TrainingScoreStatus.COMPLETED)
+                .collect(Collectors.toList());
+        return trainingScoreMapper.convertTrainingScoreToStatisticsResponse(completedTrainingScores);
     }
 
     @Scheduled(cron = "0 0 * * * *") // Chạy mỗi giờ

@@ -146,6 +146,25 @@ public class DepartmentController {
     }
 
     /**
+     * Phòng CTSV chỉnh sửa thông báo
+     * 
+     * @param announcementId
+     * @param announcement
+     * @param attachment
+     * @return
+     * @throws IdInValidException
+     * @throws IOException
+     */
+    @PutMapping("/announcements/{announcementId}")
+    @ApiMessage("Phòng CTSV chỉnh sửa thông báo")
+    public ResponseEntity<Announcement> updateAnnouncement(@PathVariable Integer announcementId,
+            @RequestBody Announcement announcement,
+            @RequestParam(value = "attachment", required = false) MultipartFile attachment)
+            throws IdInValidException, IOException {
+        return ResponseEntity.ok(departmentService.updateAnnouncement(announcementId, announcement, attachment));
+    }
+
+    /**
      * xoá thông báo
      * 
      * @param announcementId

@@ -58,6 +58,8 @@ public class DepartmentService {
     private final ComplaintMapper complaintMapper;
     private final SemesterService semesterService;
 
+    private final EmailService emailService;
+
     public Department getDepartmentById(String id) {
         return departmentRepository.findById(id).orElse(null);
     }
@@ -118,10 +120,8 @@ public class DepartmentService {
                 trainingScore.setStartDate(request.getStartDate());
                 trainingScore.setEndDate(request.getEndDate());
                 trainingScores.add(trainingScoreRepository.save(trainingScore));
+                emailService.sendNotificationOfTrainingScoreToStudent(student.getUniversityEmail(), trainingScore);
             }
-        }
-        if (trainingScores.isEmpty()) {
-            throw new BadRequestException("Không tạo được điểm rèn luyện mới");
         }
     }
 
@@ -305,6 +305,33 @@ public class DepartmentService {
             announcement.setAttachmentUrl(attachmentUrl);
         }
         return announcementRepository.save(announcement);
+    }
+
+    /**
+     * Phòng CTSV chỉnh sửa thông báo
+     * 
+     * @param announcementId
+     * @param announcementRequest
+     * @return
+     * @throws IdInValidException
+     */
+    public Announcement updateAnnouncement(Integer announcementId, Announcement announcement,
+            MultipartFile attachment) throws IdInValidException, IOException {
+        Announcement announcementToUpdate = announcementRepository.findById(announcementId).orElse(null);
+        if (announcementToUpdate == null) {
+            throw new IdInValidException("Thông báo không tồn tại");
+        }
+        if (announcement.getTitle() != null) {
+            announcementToUpdate.setTitle(announcement.getTitle());
+        }
+        if (announcement.getContent() != null) {
+            announcementToUpdate.setContent(announcement.getContent());
+        }
+        if (attachment != null) {
+            String attachmentUrl = s3UploadFileUtil.uploadFile(attachment, "temps");
+            announcementToUpdate.setAttachmentUrl(attachmentUrl);
+        }
+        return announcementRepository.save(announcementToUpdate);
     }
 
     /**

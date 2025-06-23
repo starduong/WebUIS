@@ -2,6 +2,7 @@ package vn.edu.ptithcm.WebUIS.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,8 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import vn.edu.ptithcm.WebUIS.domain.entity.AcademicAdvisor;
 import vn.edu.ptithcm.WebUIS.domain.entity.AcademicResult;
 import vn.edu.ptithcm.WebUIS.domain.entity.Account;
+import vn.edu.ptithcm.WebUIS.domain.entity.ClassCommittee;
+import vn.edu.ptithcm.WebUIS.domain.entity.ClassEntity;
 import vn.edu.ptithcm.WebUIS.domain.entity.Complaint;
 import vn.edu.ptithcm.WebUIS.domain.entity.EvaluationContent;
 import vn.edu.ptithcm.WebUIS.domain.entity.Student;
@@ -31,8 +35,10 @@ import vn.edu.ptithcm.WebUIS.domain.response.student.FormTrainingScoreResponse;
 import vn.edu.ptithcm.WebUIS.domain.response.student.StudentResponse;
 import vn.edu.ptithcm.WebUIS.exception.BadRequestException;
 import vn.edu.ptithcm.WebUIS.exception.IdInValidException;
+import vn.edu.ptithcm.WebUIS.repository.AcademicAdvisorRepository;
 import vn.edu.ptithcm.WebUIS.repository.AcademicResultRepository;
 import vn.edu.ptithcm.WebUIS.repository.AccountRepository;
+import vn.edu.ptithcm.WebUIS.repository.ClassCommitteeRepository;
 import vn.edu.ptithcm.WebUIS.repository.ComplaintRepository;
 import vn.edu.ptithcm.WebUIS.repository.EvaluationContentRepository;
 import vn.edu.ptithcm.WebUIS.repository.StudentRepository;
@@ -56,6 +62,9 @@ public class StudentService {
     private final TrainingScoreDetailRepository trainingScoreDetailRepository;
     private final ComplaintRepository complaintRepository;
     private final ComplaintMapper complaintMapper;
+    private final EmailService emailService;
+    private final ClassCommitteeRepository classCommitteeRepository;
+    private final AcademicAdvisorRepository academicAdvisorRepository;
 
     /**
      * Lấy thông tin sinh viên đang đăng nhập
@@ -221,6 +230,9 @@ public class StudentService {
         trainingScore.setStatus(TrainingScoreStatus.WAIT_CLASS_COMMITTEE);
         trainingScore.setStudentAssessmentDate(LocalDateTime.now());
         trainingScoreRepository.save(trainingScore);
+        // gửi email thông báo đến cố vấn học tập và ban cán sự lớp khi số lượng đánh
+        // giá được 50% hoặc 100%
+        sendEmailNotificationToClassCommitteeAndAcademicAdvisor(trainingScore);
         return trainingScoreMapper.convertTrainingScoreToFormTrainingScoreResponse(trainingScore);
     }
 
@@ -244,5 +256,52 @@ public class StudentService {
         complaint.setStatus("PROCESSING");
         complaintRepository.save(complaint);
         return complaintMapper.toComplaintDetailResponse(complaint);
+    }
+
+    /*
+     * tính số lượng sinh viên đã đánh giá điểm rèn luyện của lớp trong học kỳ X
+     */
+    public int getNumberOfStudentEvaluatedTrainingScore(String classId, Integer semesterId) {
+        List<TrainingScore> trainingScores = trainingScoreRepository.findByClassIdAndSemesterId(classId, semesterId);
+        int numberStudentEvaluated = 0;
+        for (TrainingScore trainingScore : trainingScores) {
+            if (trainingScore.getStatus() == TrainingScoreStatus.WAIT_CLASS_COMMITTEE) {
+                numberStudentEvaluated++;
+            }
+        }
+        return numberStudentEvaluated;
+    }
+
+    /**
+     * gửi email thông báo đến cố vấn học tập và ban cán sự lớp khi số lượng đánh
+     * giá được 50% hoặc 100%
+     */
+    public void sendEmailNotificationToClassCommitteeAndAcademicAdvisor(TrainingScore trainingScore) {
+        // lấy lớp của sinh viên
+        ClassEntity classEntity = trainingScore.getStudent().getClassEntity();
+        int numberStudentEvaluated = getNumberOfStudentEvaluatedTrainingScore(classEntity.getClassId(),
+                trainingScore.getSemester().getId());
+        // gửi email thông báo đến cố vấn học tập và ban cán sự lớp khi số lượng đánh
+        // giá được 50% hoặc 100%
+        if (numberStudentEvaluated == classEntity.getStudents().size()
+                || numberStudentEvaluated == classEntity.getStudents().size() / 2) {
+            // lấy email cố vấn học tập và ban cán sự lớp
+            List<String> emails = new ArrayList<>();
+            AcademicAdvisor academicAdvisor = academicAdvisorRepository.findByClassEntity(classEntity);
+            if (academicAdvisor != null) {
+                emails.add(academicAdvisor.getLecturer().getEmail());
+            }
+            for (Student student : classEntity.getStudents()) {
+                ClassCommittee classCommittee = classCommitteeRepository.findByStudent(student).orElse(null);
+                if (classCommittee != null) {
+                    emails.add(classCommittee.getStudent().getUniversityEmail());
+                }
+            }
+
+            for (String email : emails) {
+                emailService.sendNotificationOfTrainingScoreToClassCommitteeAndAcademicAdvisor(
+                        email, trainingScore, classEntity, numberStudentEvaluated);
+            }
+        }
     }
 }

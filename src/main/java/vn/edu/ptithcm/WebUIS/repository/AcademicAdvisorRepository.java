@@ -13,5 +13,7 @@ public interface AcademicAdvisorRepository extends JpaRepository<AcademicAdvisor
 
     AcademicAdvisor findByLecturer(Lecturer lecturer);
 
+    AcademicAdvisor findByClassEntity(ClassEntity classEntity);
+
     boolean existsByLecturer(Lecturer lecturer);
 }
